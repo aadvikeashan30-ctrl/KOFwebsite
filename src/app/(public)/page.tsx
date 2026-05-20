@@ -1,16 +1,42 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import HeroSection from '@/components/home/HeroSection';
 import TrustSection from '@/components/home/TrustSection';
 import ManufacturingSection from '@/components/home/ManufacturingSection';
 import CTASection from '@/components/home/CTASection';
+import FAQSection from '@/components/home/FAQSection';
+import AppSection from '@/components/home/AppSection';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { PRODUCTS } from '@/lib/constants';
 import ProductImage from '@/components/products/ProductImage';
 import { ChevronRight, Star, MapPin, Phone, Heart, Leaf } from 'lucide-react';
 
+interface PriceData {
+  product_id: string;
+  product_name: string;
+  retail_price: number;
+  bulk_price: number;
+  tin_price: number;
+}
+
 export default function HomePage() {
+  const [prices, setPrices] = useState<PriceData[]>([]);
+
+  useEffect(() => {
+    fetch('/api/public/pricing')
+      .then(r => r.json())
+      .then(data => setPrices(data.prices || []))
+      .catch(() => {});
+  }, []);
+
+  const getLivePrice = (productId: string): string => {
+    const priceData = prices.find(p => p.product_id === productId);
+    if (priceData) return `₹${priceData.retail_price}/L`;
+    return '';
+  };
+
   const typeMap: Record<string, 'sunflower' | 'groundnut' | 'palmolein' | 'soyabean' | 'ricebran' | 'deoiled'> = {
     'sungold-sunflower': 'sunflower', 'safal-groundnut': 'groundnut', 'safal-palmolein': 'palmolein',
     'safal-soyabean': 'soyabean', 'safal-ricebran': 'ricebran', 'deoiled-cake': 'deoiled',
@@ -78,7 +104,7 @@ export default function HomePage() {
                     <h3 className="font-bold text-[var(--kof-charcoal)] text-lg mb-1.5 group-hover:text-[#0E5A3A] transition-colors font-[family-name:var(--font-poppins)]">{product.name}</h3>
                     <p className="text-gray-500 text-sm mb-4 line-clamp-2 leading-relaxed">{product.description}</p>
                     <div className="flex items-center justify-between pt-4 border-t border-gray-100">
-                      <span className="text-lg font-black text-[#0E5A3A]">{product.price_range}</span>
+                      <span className="text-lg font-black text-[#0E5A3A]">{getLivePrice(product.id) || 'Contact Us'}</span>
                       <a href={`https://wa.me/916366975382?text=Hi, I want to order ${product.name}`}
                         target="_blank" rel="noopener noreferrer"
                         className="flex items-center gap-1 bg-[#0E5A3A] hover:bg-[#14805A] text-white text-xs font-bold px-3.5 py-2 rounded-xl transition-all shadow-lg shadow-[#0E5A3A]/20">
@@ -270,6 +296,9 @@ export default function HomePage() {
       </section>
 
       <CTASection />
+
+      <FAQSection />
+      <AppSection />
     </>
   );
 }

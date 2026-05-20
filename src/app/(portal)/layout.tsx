@@ -53,6 +53,7 @@ export default function PortalLayout({ children }: { children: React.ReactNode }
     { name: 'Pricing', href: '/admin/pricing', icon: IndianRupee },
     { name: 'Orders', href: '/admin/orders', icon: ShoppingCart },
     { name: 'Announcements', href: '/admin/announcements', icon: Megaphone },
+    { name: 'Gallery', href: '/admin/gallery', icon: ImageIcon },
     { name: 'Recruitments', href: '/admin/recruitments', icon: Briefcase },
   ];
 

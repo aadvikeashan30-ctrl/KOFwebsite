@@ -1,21 +1,44 @@
 'use client';
 
 import { useState } from 'react';
-import { Phone, Mail, MapPin, Clock, MessageCircle, Globe, Camera, Send } from 'lucide-react';
+import { Phone, Mail, MapPin, Clock, MessageCircle, Globe, Camera, Send, Navigation, PhoneCall } from 'lucide-react';
 import PageHero from '@/components/ui/PageHero';
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
     name: '', email: '', phone: '', subject: '', message: ''
   });
-  const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [toast, setToast] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const showToast = (type: 'success' | 'error', message: string) => {
+    setToast({ type, message });
+    setTimeout(() => setToast(null), 5000);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // In production, this would send to an API
-    setSubmitted(true);
-    setTimeout(() => setSubmitted(false), 3000);
-    setFormData({ name: '', email: '', phone: '', subject: '', message: '' });
+    setSubmitting(true);
+
+    try {
+      const res = await fetch('/api/public/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+
+      if (res.ok) {
+        showToast('success', 'Thank you! Your message has been sent successfully. We\'ll contact you soon.');
+        setFormData({ name: '', email: '', phone: '', subject: '', message: '' });
+      } else {
+        const data = await res.json().catch(() => null);
+        showToast('error', data?.error || 'Failed to send message. Please try again.');
+      }
+    } catch {
+      showToast('error', 'Network error. Please check your connection and try again.');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -26,6 +49,19 @@ export default function ContactPage() {
         title="Contact Us"
         subtitle="Get in touch with us for orders, distributorship, or any queries"
       />
+
+      {/* Toast Notification */}
+      {toast && (
+        <div className="fixed top-6 right-6 z-50 animate-in fade-in slide-in-from-top-2">
+          <div className={`px-5 py-4 rounded-xl shadow-lg border ${
+            toast.type === 'success'
+              ? 'bg-green-50 border-green-200 text-green-800'
+              : 'bg-red-50 border-red-200 text-red-800'
+          }`}>
+            <p className="text-sm font-medium">{toast.message}</p>
+          </div>
+        </div>
+      )}
 
       <section className="py-16 bg-[var(--kof-warm-gray)]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
@@ -41,7 +77,7 @@ export default function ContactPage() {
                     </div>
                     <div>
                       <p className="font-medium text-gray-900">Address</p>
-                      <p className="text-sm text-gray-600">KOF Complex, Chitradurga, Karnataka - 577501</p>
+                      <p className="text-sm text-gray-600">#29/1, KIADB Industrial Area, Kelagote, Old Bangalore Rd, Industrial Area, Chitradurga, Karnataka 577501</p>
                     </div>
                   </div>
                   <div className="flex items-start gap-4">
@@ -71,6 +107,48 @@ export default function ContactPage() {
                       <p className="text-sm text-gray-600">Mon - Sat: 9:00 AM - 6:00 PM</p>
                     </div>
                   </div>
+                </div>
+              </div>
+
+              {/* Working Hours Section */}
+              <div className="card p-6">
+                <h3 className="font-bold text-lg text-gray-900 mb-4">Working Hours</h3>
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between py-2 border-b border-gray-100">
+                    <span className="text-sm font-medium text-gray-700">Monday - Saturday</span>
+                    <span className="text-sm text-green-700 font-semibold">9:00 AM - 6:00 PM</span>
+                  </div>
+                  <div className="flex items-center justify-between py-2 border-b border-gray-100">
+                    <span className="text-sm font-medium text-gray-700">Sunday</span>
+                    <span className="text-sm text-red-600 font-semibold">Closed</span>
+                  </div>
+                  <div className="mt-3 flex items-center gap-2 bg-green-50 p-3 rounded-lg">
+                    <MessageCircle size={16} className="text-green-600" />
+                    <p className="text-xs text-green-800 font-medium">Available on WhatsApp 24/7</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Quick Connect */}
+              <div className="card p-6">
+                <h3 className="font-bold text-lg text-gray-900 mb-4">Quick Connect</h3>
+                <div className="space-y-3">
+                  <a
+                    href="https://wa.me/916366975382"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center gap-3 w-full p-4 bg-green-500 hover:bg-green-600 text-white rounded-xl transition-colors font-semibold text-lg shadow-md hover:shadow-lg"
+                  >
+                    <MessageCircle size={24} />
+                    Chat on WhatsApp
+                  </a>
+                  <a
+                    href="tel:+916366975382"
+                    className="flex items-center justify-center gap-3 w-full p-4 bg-blue-600 hover:bg-blue-700 text-white rounded-xl transition-colors font-semibold text-lg shadow-md hover:shadow-lg"
+                  >
+                    <PhoneCall size={24} />
+                    Call Now
+                  </a>
                 </div>
               </div>
 
@@ -119,12 +197,6 @@ export default function ContactPage() {
                 <p className="text-gray-600 text-sm mb-6">
                   Fill out the form below and we&apos;ll get back to you within 24 hours.
                 </p>
-
-                {submitted && (
-                  <div className="bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded-xl mb-6">
-                    Thank you! Your message has been sent successfully. We&apos;ll contact you soon.
-                  </div>
-                )}
 
                 <form onSubmit={handleSubmit} className="space-y-5">
                   <div className="grid md:grid-cols-2 gap-5">
@@ -191,8 +263,13 @@ export default function ContactPage() {
                       placeholder="Tell us about your requirement..."
                     />
                   </div>
-                  <button type="submit" className="btn-primary flex items-center gap-2">
-                    <Send size={18} /> Send Message
+                  <button
+                    type="submit"
+                    disabled={submitting}
+                    className="btn-primary flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <Send size={18} />
+                    {submitting ? 'Sending...' : 'Send Message'}
                   </button>
                 </form>
               </div>
@@ -205,17 +282,33 @@ export default function ContactPage() {
       <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4">
           <h2 className="text-3xl font-bold text-gray-900 text-center mb-8">Find Us</h2>
-          <div className="rounded-2xl overflow-hidden shadow-lg h-[400px] bg-gray-200 flex items-center justify-center">
+          <div className="rounded-2xl overflow-hidden shadow-lg h-[400px] bg-gray-200">
             <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d30808.738742!2d76.38!3d14.22!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bba2f0c9e2f5a07%3A0x8c3b3b3b3b3b3b3b!2sChitradurga%2C%20Karnataka!5e0!3m2!1sen!2sin!4v1234567890"
+              src="https://www.google.com/maps?q=KIADB+Industrial+Area,+Kelagote,+Old+Bangalore+Road,+Chitradurga,+Karnataka+577501&output=embed"
               width="100%"
               height="100%"
               style={{ border: 0 }}
               allowFullScreen
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
-              title="KOF Chitradurga Location"
+              title="KOF Chitradurga Location - KIADB Industrial Area, Kelagote"
             />
+          </div>
+          <div className="mt-4 bg-green-50 border border-green-200 rounded-xl p-4 text-center">
+            <p className="text-sm text-gray-700 font-medium">
+              📍 #29/1, KIADB Industrial Area, Kelagote, Old Bangalore Rd, Industrial Area, Chitradurga, Karnataka 577501
+            </p>
+          </div>
+          <div className="mt-6 text-center">
+            <a
+              href="https://www.google.com/maps/search/KIADB+Industrial+Area+Kelagote+Old+Bangalore+Road+Chitradurga+Karnataka+577501"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-green-600 hover:bg-green-700 text-white rounded-xl font-semibold transition-colors shadow-md hover:shadow-lg"
+            >
+              <Navigation size={20} />
+              Get Directions
+            </a>
           </div>
         </div>
       </section>
