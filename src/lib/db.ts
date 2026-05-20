@@ -109,6 +109,19 @@ function initializeDatabase() {
       created_at TEXT DEFAULT (datetime('now')),
       FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
     );
+
+    CREATE TABLE IF NOT EXISTS announcements (
+      id TEXT PRIMARY KEY,
+      title TEXT NOT NULL,
+      content TEXT NOT NULL,
+      type TEXT DEFAULT 'general' CHECK(type IN ('general', 'tender', 'news', 'urgent')),
+      target TEXT DEFAULT 'all' CHECK(target IN ('all', 'employees', 'public')),
+      published INTEGER DEFAULT 1,
+      created_by TEXT,
+      created_at TEXT DEFAULT (datetime('now')),
+      expires_at TEXT,
+      FOREIGN KEY (created_by) REFERENCES users(id)
+    );
   `);
 
   // Create default admin if not exists
@@ -209,6 +222,53 @@ function seedSampleData() {
           '2026-03-10'
         );
       }
+    }
+
+    // Seed announcements
+    const insertAnnouncement = db.prepare(`
+      INSERT INTO announcements (id, title, content, type, target, created_by, created_at)
+      VALUES (?, ?, ?, ?, ?, ?, ?)
+    `);
+
+    insertAnnouncement.run('ann-001', 'Sunflower Seed Procurement Notice 2026', 'KOF Chitradurga is procuring sunflower seeds for Kharif 2026 season. Farmers can bring their produce to the nearest OGCS or APMC yard. MSP: ₹7,721/quintal.', 'tender', 'public', 'admin-001', '2026-05-15');
+    insertAnnouncement.run('ann-002', 'Monthly Team Meeting - May 2026', 'All employees are requested to attend the monthly team meeting on 25th May at 10:00 AM in the conference hall. Agenda: Q1 review and Q2 targets.', 'general', 'employees', 'admin-001', '2026-05-18');
+    insertAnnouncement.run('ann-003', 'New Distributor Application Open', 'We are looking for distributors in Bellary and Hospet regions. Interested parties can apply with their business documents. Exclusive territory benefits available.', 'news', 'public', 'admin-001', '2026-05-10');
+    insertAnnouncement.run('ann-004', 'Oil Packing Unit Maintenance - June 2026', 'The packing unit will undergo scheduled maintenance from June 5-7. All dispatches for that week should be planned accordingly.', 'urgent', 'employees', 'admin-001', '2026-05-19');
+    insertAnnouncement.run('ann-005', 'Farmer Training Program - Haveri AATC', 'Free training program on improved oilseed varieties and best practices at AATC Haveri on June 15-16, 2026. Registration open for all OGCS members.', 'news', 'public', 'admin-001', '2026-05-12');
+
+    // Seed attendance for current month (May 2026)
+    const insertAttendance = db.prepare(`
+      INSERT OR IGNORE INTO attendance (id, employee_id, date, check_in, check_out, status)
+      VALUES (?, ?, ?, ?, ?, ?)
+    `);
+
+    for (const emp of employees) {
+      for (let day = 1; day <= 20; day++) {
+        const dateStr = `2026-05-${String(day).padStart(2, '0')}`;
+        const dayOfWeek = new Date(dateStr).getDay();
+        if (dayOfWeek === 0) continue; // Skip Sundays
+        
+        const isPresent = Math.random() > 0.1;
+        insertAttendance.run(
+          `att-${emp.id}-${day}`,
+          emp.id,
+          dateStr,
+          isPresent ? `09:${String(Math.floor(Math.random() * 30)).padStart(2, '0')}` : null,
+          isPresent ? `18:${String(Math.floor(Math.random() * 30)).padStart(2, '0')}` : null,
+          isPresent ? 'present' : 'absent'
+        );
+      }
+    }
+
+    // Seed notifications
+    const insertNotification = db.prepare(`
+      INSERT INTO notifications (id, user_id, title, message, type, created_at)
+      VALUES (?, ?, ?, ?, ?, ?)
+    `);
+
+    for (const emp of employees) {
+      insertNotification.run(`notif-${emp.id}-1`, emp.id, 'Payslip Generated', 'Your payslip for May 2026 has been generated. Check your payslips section.', 'info', '2026-05-20');
+      insertNotification.run(`notif-${emp.id}-2`, emp.id, 'Team Meeting Reminder', 'Monthly team meeting scheduled for May 25th at 10:00 AM.', 'reminder', '2026-05-18');
     }
   });
 

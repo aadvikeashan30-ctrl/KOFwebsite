@@ -64,9 +64,11 @@ export default function PortalLayout({ children }: { children: React.ReactNode }
         { name: 'Payslips', href: '/admin/payslips', icon: FileText },
         { name: 'Leaves', href: '/admin/leaves', icon: Calendar },
         { name: 'Orders', href: '/admin/orders', icon: ShoppingCart },
+        { name: 'Announcements', href: '/admin/announcements', icon: Bell },
       ]
     : [
         { name: 'Dashboard', href: '/employee/dashboard', icon: LayoutDashboard },
+        { name: 'Attendance', href: '/employee/attendance', icon: Settings },
         { name: 'Payslips', href: '/employee/payslips', icon: FileText },
         { name: 'Leaves', href: '/employee/leaves', icon: Calendar },
         { name: 'Profile', href: '/employee/profile', icon: User },

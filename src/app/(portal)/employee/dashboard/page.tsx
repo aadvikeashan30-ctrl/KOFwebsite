@@ -1,13 +1,14 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { FileText, Calendar, User, IndianRupee, Clock, CheckCircle } from 'lucide-react';
+import { FileText, Calendar, User, IndianRupee, Clock, CheckCircle, Bell, Megaphone, AlertTriangle } from 'lucide-react';
 import Link from 'next/link';
 
 export default function EmployeeDashboard() {
   const [profile, setProfile] = useState<any>(null);
   const [payslips, setPayslips] = useState<any[]>([]);
   const [leaves, setLeaves] = useState<any>(null);
+  const [notifications, setNotifications] = useState<any>({ notifications: [], announcements: [], unreadCount: 0 });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -15,10 +16,12 @@ export default function EmployeeDashboard() {
       fetch('/api/employee/profile').then(r => r.json()),
       fetch('/api/employee/payslips').then(r => r.json()),
       fetch('/api/employee/leaves').then(r => r.json()),
-    ]).then(([profData, payData, leaveData]) => {
+      fetch('/api/employee/notifications').then(r => r.json()),
+    ]).then(([profData, payData, leaveData, notifData]) => {
       setProfile(profData.profile);
       setPayslips(payData.payslips || []);
       setLeaves(leaveData);
+      setNotifications(notifData);
     }).finally(() => setLoading(false));
   }, []);
 
@@ -179,6 +182,57 @@ export default function EmployeeDashboard() {
               </div>
             </div>
           ))}
+        </div>
+      </div>
+
+      {/* Notifications & Announcements */}
+      <div className="grid lg:grid-cols-2 gap-6">
+        {/* Notifications */}
+        <div className="bg-white rounded-2xl border border-gray-100 p-6">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="font-bold text-gray-900 flex items-center gap-2">
+              <Bell size={18} className="text-amber-600" /> Notifications
+            </h3>
+            {notifications.unreadCount > 0 && (
+              <span className="text-xs bg-red-100 text-red-700 px-2 py-0.5 rounded-full font-bold">
+                {notifications.unreadCount} new
+              </span>
+            )}
+          </div>
+          <div className="space-y-3">
+            {(notifications.notifications || []).slice(0, 4).map((notif: any) => (
+              <div key={notif.id} className={`p-3 rounded-xl border ${notif.read ? 'bg-gray-50 border-gray-100' : 'bg-amber-50 border-amber-100'}`}>
+                <p className="text-sm font-medium text-gray-900">{notif.title}</p>
+                <p className="text-xs text-gray-600 mt-0.5">{notif.message}</p>
+                <p className="text-xs text-gray-400 mt-1">{notif.created_at}</p>
+              </div>
+            ))}
+            {(notifications.notifications || []).length === 0 && (
+              <p className="text-sm text-gray-500 text-center py-4">No notifications</p>
+            )}
+          </div>
+        </div>
+
+        {/* Announcements */}
+        <div className="bg-white rounded-2xl border border-gray-100 p-6">
+          <h3 className="font-bold text-gray-900 flex items-center gap-2 mb-4">
+            <Megaphone size={18} className="text-green-600" /> Announcements
+          </h3>
+          <div className="space-y-3">
+            {(notifications.announcements || []).slice(0, 4).map((ann: any) => (
+              <div key={ann.id} className="p-3 rounded-xl bg-green-50 border border-green-100">
+                <div className="flex items-center gap-2">
+                  {ann.type === 'urgent' && <AlertTriangle size={14} className="text-red-600" />}
+                  <p className="text-sm font-bold text-gray-900">{ann.title}</p>
+                </div>
+                <p className="text-xs text-gray-600 mt-1 line-clamp-2">{ann.content}</p>
+                <p className="text-xs text-gray-400 mt-1">{ann.created_at}</p>
+              </div>
+            ))}
+            {(notifications.announcements || []).length === 0 && (
+              <p className="text-sm text-gray-500 text-center py-4">No announcements</p>
+            )}
+          </div>
         </div>
       </div>
     </div>
