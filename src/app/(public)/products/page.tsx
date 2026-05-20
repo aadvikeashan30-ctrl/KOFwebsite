@@ -1,12 +1,34 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Check, ShoppingCart, Star, Sparkles, ChevronRight, ArrowRight } from 'lucide-react';
+import { Check, ShoppingCart, Star, Sparkles, ChevronRight, ArrowRight, Loader2 } from 'lucide-react';
 import { PRODUCTS } from '@/lib/constants';
 import Product3D from '@/components/products/Product3D';
 import Link from 'next/link';
 
+interface PriceData {
+  product_id: string;
+  product_name: string;
+  retail_price: number;
+  bulk_price: number;
+  tin_price: number;
+}
+
 export default function ProductsPage() {
+  const [prices, setPrices] = useState<PriceData[]>([]);
+  const [pricesLoaded, setPricesLoaded] = useState(false);
+
+  useEffect(() => {
+    fetch('/api/public/pricing')
+      .then(r => r.json())
+      .then(data => {
+        setPrices(data.prices || []);
+        setPricesLoaded(true);
+      })
+      .catch(() => setPricesLoaded(true));
+  }, []);
+
   const typeMap: Record<string, 'sunflower' | 'groundnut' | 'palmolein' | 'soyabean' | 'ricebran' | 'deoiled'> = {
     'sungold-sunflower': 'sunflower',
     'safal-groundnut': 'groundnut',
@@ -23,6 +45,34 @@ export default function ProductsPage() {
     'safal-soyabean': 'safal-soyabean-oil',
     'safal-ricebran': 'safal-rice-bran-oil',
     'deoiled-cake': 'kof-deoiled-cake',
+  };
+
+  // Map product constants ID to pricing DB product_id
+  const pricingIdMap: Record<string, string> = {
+    'sungold-sunflower': 'sungold-sunflower',
+    'safal-groundnut': 'safal-groundnut',
+    'safal-palmolein': 'safal-palmolein',
+    'safal-soyabean': 'safal-soyabean',
+    'safal-ricebran': 'safal-ricebran',
+  };
+
+  const getPrice = (productId: string): string => {
+    const pricingId = pricingIdMap[productId];
+    if (!pricingId) return '';
+    const priceData = prices.find(p => p.product_id === pricingId);
+    if (!priceData) return '';
+    return `₹${priceData.retail_price}/L`;
+  };
+
+  const getPriceDisplay = (productId: string): { retail: string; bulk: string } | null => {
+    const pricingId = pricingIdMap[productId];
+    if (!pricingId) return null;
+    const priceData = prices.find(p => p.product_id === pricingId);
+    if (!priceData) return null;
+    return {
+      retail: `₹${priceData.retail_price}/L`,
+      bulk: `₹${priceData.bulk_price}/L (Bulk)`,
+    };
   };
 
   return (
@@ -61,7 +111,9 @@ export default function ProductsPage() {
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 relative">
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10">
-            {PRODUCTS.map((product, idx) => (
+            {PRODUCTS.map((product, idx) => {
+              const priceInfo = getPriceDisplay(product.id);
+              return (
               <motion.div
                 key={product.id}
                 initial={{ opacity: 0, y: 40 }}
@@ -72,18 +124,11 @@ export default function ProductsPage() {
                 <div className="card-premium group h-full hover-tilt">
                   {/* Product Image Area */}
                   <div className="relative h-64 sm:h-72 bg-gradient-to-br from-[var(--kof-cream)] via-white to-emerald-50/30 flex items-center justify-center overflow-hidden">
-                    {/* Background pattern */}
                     <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'radial-gradient(circle, #0E5A3A 1px, transparent 1px)', backgroundSize: '20px 20px' }} />
-                    
-                    {/* 3D Product */}
                     <div className="relative z-[2] group-hover:scale-110 transition-transform duration-700 ease-out">
                       <Product3D type={typeMap[product.id] || 'sunflower'} className="w-32 h-48 sm:w-36 sm:h-52" />
                     </div>
-
-                    {/* Glow effect on hover */}
                     <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent z-[1] opacity-0 group-hover:opacity-60 transition-opacity duration-500" />
-
-                    {/* Badges */}
                     <div className="absolute top-4 left-4 z-20 bg-[var(--kof-forest)] text-white text-[10px] font-bold px-3 py-1.5 rounded-full shadow-lg uppercase tracking-wider">
                       {product.category}
                     </div>
@@ -121,11 +166,23 @@ export default function ProductsPage() {
                       </div>
                     </div>
 
-                    {/* Price & CTA */}
+                    {/* Price & CTA - LIVE from admin */}
                     <div className="flex justify-between items-center">
                       <div>
-                        <p className="text-[10px] text-gray-400 font-medium uppercase tracking-wider">Price Range</p>
-                        <p className="text-xl font-black text-[var(--kof-forest)] font-[family-name:var(--font-poppins)]">{product.price_range}</p>
+                        <p className="text-[10px] text-gray-400 font-medium uppercase tracking-wider">Price</p>
+                        {!pricesLoaded ? (
+                          <div className="flex items-center gap-1 mt-1">
+                            <Loader2 size={14} className="animate-spin text-gray-400" />
+                            <span className="text-xs text-gray-400">Loading...</span>
+                          </div>
+                        ) : priceInfo ? (
+                          <div>
+                            <p className="text-xl font-black text-[var(--kof-forest)] font-[family-name:var(--font-poppins)]">{priceInfo.retail}</p>
+                            <p className="text-[10px] text-gray-400">{priceInfo.bulk}</p>
+                          </div>
+                        ) : (
+                          <p className="text-sm font-semibold text-gray-500">Contact for price</p>
+                        )}
                       </div>
                       <div className="flex items-center gap-2">
                         <Link
@@ -146,7 +203,8 @@ export default function ProductsPage() {
                   </div>
                 </div>
               </motion.div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>

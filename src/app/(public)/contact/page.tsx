@@ -282,9 +282,9 @@ export default function ContactPage() {
       <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4">
           <h2 className="text-3xl font-bold text-gray-900 text-center mb-8">Find Us</h2>
-          <div className="rounded-2xl overflow-hidden shadow-lg h-[400px] bg-gray-200 flex items-center justify-center">
+          <div className="rounded-2xl overflow-hidden shadow-lg h-[400px] bg-gray-200">
             <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3862.5!2d76.3867!3d14.2226!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bba2f0c9e2f5a07%3A0x3c4b6a2b1c3d4e5f!2sKIADB%20Industrial%20Area%2C%20Kelagote%2C%20Chitradurga!5e0!3m2!1sen!2sin!4v1700000000000"
+              src="https://www.google.com/maps?q=KIADB+Industrial+Area,+Kelagote,+Old+Bangalore+Road,+Chitradurga,+Karnataka+577501&output=embed"
               width="100%"
               height="100%"
               style={{ border: 0 }}
@@ -294,9 +294,14 @@ export default function ContactPage() {
               title="KOF Chitradurga Location - KIADB Industrial Area, Kelagote"
             />
           </div>
+          <div className="mt-4 bg-green-50 border border-green-200 rounded-xl p-4 text-center">
+            <p className="text-sm text-gray-700 font-medium">
+              📍 #29/1, KIADB Industrial Area, Kelagote, Old Bangalore Rd, Industrial Area, Chitradurga, Karnataka 577501
+            </p>
+          </div>
           <div className="mt-6 text-center">
             <a
-              href="https://www.google.com/maps/dir/?api=1&destination=14.2226,76.3867"
+              href="https://www.google.com/maps/search/KIADB+Industrial+Area+Kelagote+Old+Bangalore+Road+Chitradurga+Karnataka+577501"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 px-6 py-3 bg-green-600 hover:bg-green-700 text-white rounded-xl font-semibold transition-colors shadow-md hover:shadow-lg"

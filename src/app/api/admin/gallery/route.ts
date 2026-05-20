@@ -35,7 +35,7 @@ export async function POST(request: NextRequest) {
     db.prepare(`
       INSERT INTO gallery (id, title, category, description, image_url, sort_order, published, created_at)
       VALUES (?, ?, ?, ?, ?, ?, ?, datetime('now'))
-    `).run(id, title, category || null, description || null, image_url, sort_order || 0, published || 0);
+    `).run(id, title, category || 'Factory', description || null, image_url, sort_order || 0, published !== undefined ? published : 1);
 
     return NextResponse.json({ message: 'Gallery item created', id }, { status: 201 });
   } catch (error) {

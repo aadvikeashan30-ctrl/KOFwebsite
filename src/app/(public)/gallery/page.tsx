@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Image from 'next/image';
 import { motion } from 'framer-motion';
 import PageHero from '@/components/ui/PageHero';
 import { Camera, X, Filter } from 'lucide-react';
@@ -134,14 +133,15 @@ export default function GalleryPage() {
                 >
                   {/* Image */}
                   <div className="relative overflow-hidden">
-                    <Image
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
                       src={item.image_url}
                       alt={item.title}
-                      width={400}
-                      height={300}
-                      unoptimized
                       loading="lazy"
                       className="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-110"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" fill="%23e5e7eb"><rect width="400" height="300"/><text x="50%" y="50%" text-anchor="middle" fill="%239ca3af" font-size="14">Image unavailable</text></svg>';
+                      }}
                     />
                     {/* Hover Overlay */}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
@@ -205,13 +205,14 @@ export default function GalleryPage() {
 
             {/* Full Image */}
             <div className="relative w-full">
-              <Image
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
                 src={selectedItem.image_url}
                 alt={selectedItem.title}
-                width={800}
-                height={600}
-                unoptimized
-                className="w-full h-auto object-cover rounded-t-3xl"
+                className="w-full h-auto object-cover rounded-t-3xl max-h-[60vh]"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" fill="%23e5e7eb"><rect width="800" height="600"/><text x="50%" y="50%" text-anchor="middle" fill="%239ca3af" font-size="18">Image unavailable</text></svg>';
+                }}
               />
             </div>
 
