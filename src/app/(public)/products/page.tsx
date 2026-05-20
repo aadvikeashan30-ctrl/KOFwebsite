@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { Check, ShoppingCart, Star, Sparkles, ChevronRight, ArrowRight } from 'lucide-react';
 import { PRODUCTS } from '@/lib/constants';
 import Product3D from '@/components/products/Product3D';
+import Link from 'next/link';
 
 export default function ProductsPage() {
   const typeMap: Record<string, 'sunflower' | 'groundnut' | 'palmolein' | 'soyabean' | 'ricebran' | 'deoiled'> = {
@@ -13,6 +14,15 @@ export default function ProductsPage() {
     'safal-soyabean': 'soyabean',
     'safal-ricebran': 'ricebran',
     'deoiled-cake': 'deoiled',
+  };
+
+  const slugMap: Record<string, string> = {
+    'sungold-sunflower': 'sungold-sunflower-oil',
+    'safal-groundnut': 'safal-groundnut-oil',
+    'safal-palmolein': 'safal-palmolein-oil',
+    'safal-soyabean': 'safal-soyabean-oil',
+    'safal-ricebran': 'safal-rice-bran-oil',
+    'deoiled-cake': 'kof-deoiled-cake',
   };
 
   return (
@@ -117,13 +127,21 @@ export default function ProductsPage() {
                         <p className="text-[10px] text-gray-400 font-medium uppercase tracking-wider">Price Range</p>
                         <p className="text-xl font-black text-[var(--kof-forest)] font-[family-name:var(--font-poppins)]">{product.price_range}</p>
                       </div>
-                      <a
-                        href={`https://wa.me/916366975382?text=Hi, I want to order ${product.name}`}
-                        target="_blank" rel="noopener noreferrer"
-                        className="flex items-center gap-1.5 bg-[var(--kof-forest)] hover:bg-[var(--kof-forest-light)] text-white text-xs font-bold px-4 py-2.5 rounded-xl transition-all duration-300 shadow-lg shadow-[var(--kof-forest)]/20 hover:shadow-[var(--kof-forest)]/40 hover:-translate-y-0.5"
-                      >
-                        <ShoppingCart size={14} /> Order
-                      </a>
+                      <div className="flex items-center gap-2">
+                        <Link
+                          href={`/products/${slugMap[product.id] || product.id}`}
+                          className="flex items-center gap-1 border-2 border-[var(--kof-forest)]/20 hover:border-[var(--kof-forest)] text-[var(--kof-forest)] text-xs font-bold px-3 py-2.5 rounded-xl transition-all duration-300 hover:bg-[var(--kof-forest)]/5"
+                        >
+                          Details
+                        </Link>
+                        <a
+                          href={`https://wa.me/916366975382?text=Hi, I want to order ${product.name}`}
+                          target="_blank" rel="noopener noreferrer"
+                          className="flex items-center gap-1.5 bg-[var(--kof-forest)] hover:bg-[var(--kof-forest-light)] text-white text-xs font-bold px-4 py-2.5 rounded-xl transition-all duration-300 shadow-lg shadow-[var(--kof-forest)]/20 hover:shadow-[var(--kof-forest)]/40 hover:-translate-y-0.5"
+                        >
+                          <ShoppingCart size={14} /> Order
+                        </a>
+                      </div>
                     </div>
                   </div>
                 </div>

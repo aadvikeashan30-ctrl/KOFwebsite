@@ -1,83 +1,236 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import Image from 'next/image';
+import { motion } from 'framer-motion';
 import PageHero from '@/components/ui/PageHero';
-import { Camera, X, Droplets, Factory, Sprout, Truck, Users, Award } from 'lucide-react';
+import { Camera, X, Filter } from 'lucide-react';
 
-const galleryItems = [
-  { id: 1, title: 'Sungold Sunflower Oil Packing', category: 'Products', icon: Droplets, color: 'from-amber-400 to-yellow-500', desc: 'Our flagship AGMARK certified sunflower oil in various pack sizes' },
-  { id: 2, title: 'Modern Oil Packing Unit', category: 'Factory', icon: Factory, color: 'from-blue-500 to-indigo-600', desc: 'State-of-the-art automated packing machines at Chitradurga unit' },
-  { id: 3, title: 'Sunflower Seed Procurement', category: 'Procurement', icon: Sprout, color: 'from-green-500 to-emerald-600', desc: 'Direct procurement from farmer cooperatives at APMC yards' },
-  { id: 4, title: 'Safal Groundnut Oil Range', category: 'Products', icon: Droplets, color: 'from-orange-500 to-red-600', desc: 'Premium cold-pressed groundnut oil with traditional taste' },
-  { id: 5, title: 'Distribution Fleet', category: 'Distribution', icon: Truck, color: 'from-purple-500 to-violet-600', desc: 'Our delivery fleet covering 4 districts within 50km radius' },
-  { id: 6, title: 'Quality Testing Lab', category: 'Factory', icon: Award, color: 'from-teal-500 to-cyan-600', desc: 'In-house quality laboratory ensuring AGMARK standards' },
-  { id: 7, title: 'Farmer Training Program', category: 'Activities', icon: Users, color: 'from-lime-500 to-green-600', desc: 'Regular training sessions at AATC Haveri for oilseed farmers' },
-  { id: 8, title: 'Oil Extraction Plant', category: 'Factory', icon: Factory, color: 'from-gray-600 to-gray-800', desc: 'Solvent extraction plant processing sunflower and groundnut seeds' },
-  { id: 9, title: 'Board Meeting 2026', category: 'Management', icon: Users, color: 'from-green-700 to-emerald-800', desc: 'Annual board meeting discussing procurement strategies and growth' },
-  { id: 10, title: 'Retail Store Display', category: 'Marketing', icon: Award, color: 'from-pink-500 to-rose-600', desc: 'KOF branded shelving at partner retail stores' },
-  { id: 11, title: 'Safal Rice Bran Oil', category: 'Products', icon: Droplets, color: 'from-violet-500 to-purple-600', desc: 'Heart-healthy rice bran oil rich in Oryzanol' },
-  { id: 12, title: 'De-oiled Cake Storage', category: 'Factory', icon: Factory, color: 'from-amber-700 to-orange-800', desc: 'High-protein DOC storage for cattle feed distribution' },
-];
+interface GalleryItem {
+  id: number;
+  title: string;
+  description?: string;
+  image_url: string;
+  category: string;
+  sort_order?: number;
+  published?: number;
+  created_at?: string;
+}
 
-const categories = ['All', 'Products', 'Factory', 'Procurement', 'Distribution', 'Activities', 'Marketing', 'Management'];
+const categories = ['All', 'Factory', 'Products', 'Events', 'Team', 'Infrastructure'];
 
 export default function GalleryPage() {
-  const [filter, setFilter] = useState('All');
-  const [selected, setSelected] = useState<number | null>(null);
+  const [galleryItems, setGalleryItems] = useState<GalleryItem[]>([]);
+  const [activeCategory, setActiveCategory] = useState('All');
+  const [loading, setLoading] = useState(true);
+  const [selectedItem, setSelectedItem] = useState<GalleryItem | null>(null);
 
-  const filtered = filter === 'All' ? galleryItems : galleryItems.filter(i => i.category === filter);
-  const selectedItem = galleryItems.find(i => i.id === selected);
+  useEffect(() => {
+    fetchGallery(activeCategory);
+  }, [activeCategory]);
+
+  const fetchGallery = async (category: string) => {
+    setLoading(true);
+    try {
+      const url =
+        category === 'All'
+          ? '/api/public/gallery'
+          : `/api/public/gallery?category=${encodeURIComponent(category)}`;
+      const res = await fetch(url);
+      const data = await res.json();
+      setGalleryItems(data.gallery || []);
+    } catch (error) {
+      console.error('Failed to fetch gallery:', error);
+      setGalleryItems([]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <>
-      <PageHero icon={Camera} badge="Photo Gallery" title="Gallery" subtitle="A visual journey through our facilities, products, and farmer programs" />
+      <PageHero
+        icon={Camera}
+        badge="Photo Gallery"
+        title="Gallery"
+        subtitle="A visual journey through our facilities, products, and community events"
+      />
 
       <section className="py-20 bg-[var(--kof-warm-gray)]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          {/* Filter */}
-          <div className="flex flex-wrap justify-center gap-2 mb-12">
-            {categories.map((cat) => (
-              <button key={cat} onClick={() => setFilter(cat)}
-                className={`px-4 py-2 rounded-full text-sm font-semibold transition-all ${
-                  filter === cat ? 'bg-green-700 text-white shadow-lg' : 'bg-white border border-gray-200 text-gray-600 hover:bg-green-50 hover:text-green-700'
-                }`}>
-                {cat}
-              </button>
-            ))}
+          {/* Category Filters */}
+          <div className="flex flex-col items-center mb-12">
+            <div className="flex items-center gap-2 mb-4">
+              <Filter size={16} className="text-green-700" />
+              <span className="text-sm font-semibold text-gray-500 uppercase tracking-wider">
+                Filter by Category
+              </span>
+            </div>
+            <div className="flex flex-wrap justify-center gap-2">
+              {categories.map((cat) => (
+                <button
+                  key={cat}
+                  onClick={() => setActiveCategory(cat)}
+                  className={`px-5 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 ${
+                    activeCategory === cat
+                      ? 'bg-green-700 text-white shadow-lg shadow-green-700/25 scale-105'
+                      : 'bg-white border border-gray-200 text-gray-600 hover:bg-green-50 hover:text-green-700 hover:border-green-200'
+                  }`}
+                >
+                  {cat}
+                </button>
+              ))}
+            </div>
+            {/* Photo Count */}
+            {!loading && (
+              <motion.p
+                initial={{ opacity: 0, y: 5 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3 }}
+                className="mt-4 text-sm text-gray-500 font-medium"
+              >
+                {galleryItems.length} photo{galleryItems.length !== 1 ? 's' : ''}
+              </motion.p>
+            )}
           </div>
 
-          {/* Grid */}
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {filtered.map((item) => (
-              <div key={item.id} onClick={() => setSelected(item.id)}
-                className="group cursor-pointer relative aspect-square rounded-2xl overflow-hidden border border-gray-100 hover:border-green-200 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
-                <div className={`absolute inset-0 bg-gradient-to-br ${item.color} opacity-80`} />
-                <div className="absolute inset-0 flex flex-col items-center justify-center text-white p-4 text-center">
-                  <item.icon size={40} className="mb-3 group-hover:scale-125 transition-transform duration-300" />
-                  <h3 className="font-bold text-sm leading-tight">{item.title}</h3>
-                  <p className="text-xs text-white/70 mt-1">{item.category}</p>
+          {/* Loading Skeleton */}
+          {loading && (
+            <div className="columns-2 md:columns-3 lg:columns-4 gap-4 space-y-4">
+              {Array.from({ length: 8 }).map((_, i) => (
+                <div
+                  key={i}
+                  className="break-inside-avoid rounded-2xl overflow-hidden bg-white border border-gray-100 animate-pulse"
+                >
+                  <div
+                    className="bg-gray-200"
+                    style={{ height: `${200 + (i % 3) * 80}px` }}
+                  />
+                  <div className="p-3">
+                    <div className="h-3 bg-gray-200 rounded w-3/4 mb-2" />
+                    <div className="h-2 bg-gray-100 rounded w-1/2" />
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
+
+          {/* Masonry Grid */}
+          {!loading && galleryItems.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.4 }}
+              className="columns-2 md:columns-3 lg:columns-4 gap-4 space-y-4"
+            >
+              {galleryItems.map((item, index) => (
+                <motion.div
+                  key={item.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4, delay: index * 0.05 }}
+                  onClick={() => setSelectedItem(item)}
+                  className="break-inside-avoid group cursor-pointer relative rounded-2xl overflow-hidden card-premium hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+                >
+                  {/* Image */}
+                  <div className="relative overflow-hidden">
+                    <Image
+                      src={item.image_url}
+                      alt={item.title}
+                      width={400}
+                      height={300}
+                      unoptimized
+                      loading="lazy"
+                      className="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-110"
+                    />
+                    {/* Hover Overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
+                      <h3 className="text-white font-bold text-sm leading-tight">
+                        {item.title}
+                      </h3>
+                    </div>
+                  </div>
+
+                  {/* Category Badge */}
+                  <div className="absolute top-3 right-3">
+                    <span className="bg-white/90 backdrop-blur-sm text-gray-700 text-xs font-semibold px-2.5 py-1 rounded-full shadow-sm">
+                      {item.category}
+                    </span>
+                  </div>
+                </motion.div>
+              ))}
+            </motion.div>
+          )}
+
+          {/* Empty State */}
+          {!loading && galleryItems.length === 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-center py-20"
+            >
+              <Camera size={48} className="mx-auto text-gray-300 mb-4" />
+              <h3 className="text-xl font-bold text-gray-600 mb-2">No photos found</h3>
+              <p className="text-gray-400">
+                No gallery items available for this category yet.
+              </p>
+            </motion.div>
+          )}
         </div>
       </section>
 
-      {/* Lightbox */}
+      {/* Zoom Modal */}
       {selectedItem && (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4" onClick={() => setSelected(null)}>
-          <div className="bg-white rounded-3xl max-w-lg w-full p-8 relative" onClick={(e) => e.stopPropagation()}>
-            <button onClick={() => setSelected(null)} className="absolute top-4 right-4 p-2 rounded-full hover:bg-gray-100">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 bg-black/85 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+          onClick={() => setSelectedItem(null)}
+        >
+          <motion.div
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+            className="bg-white rounded-3xl max-w-3xl w-full max-h-[90vh] overflow-y-auto relative"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Close Button */}
+            <button
+              onClick={() => setSelectedItem(null)}
+              className="absolute top-4 right-4 z-10 p-2 rounded-full bg-black/50 hover:bg-black/70 text-white transition-colors duration-200"
+            >
               <X size={20} />
             </button>
-            <div className={`w-full aspect-video rounded-2xl bg-gradient-to-br ${selectedItem.color} flex items-center justify-center mb-6`}>
-              <selectedItem.icon size={80} className="text-white" />
+
+            {/* Full Image */}
+            <div className="relative w-full">
+              <Image
+                src={selectedItem.image_url}
+                alt={selectedItem.title}
+                width={800}
+                height={600}
+                unoptimized
+                className="w-full h-auto object-cover rounded-t-3xl"
+              />
             </div>
-            <h2 className="text-2xl font-black text-gray-900">{selectedItem.title}</h2>
-            <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full font-semibold">{selectedItem.category}</span>
-            <p className="text-gray-600 mt-3 leading-relaxed">{selectedItem.desc}</p>
-          </div>
-        </div>
+
+            {/* Details */}
+            <div className="p-6 sm:p-8">
+              <h2 className="text-2xl sm:text-3xl font-black text-gray-900 mb-2">
+                {selectedItem.title}
+              </h2>
+              <span className="inline-block bg-green-100 text-green-700 text-xs font-semibold px-3 py-1 rounded-full mb-4">
+                {selectedItem.category}
+              </span>
+              {selectedItem.description && (
+                <p className="text-gray-600 leading-relaxed">
+                  {selectedItem.description}
+                </p>
+              )}
+            </div>
+          </motion.div>
+        </motion.div>
       )}
     </>
   );

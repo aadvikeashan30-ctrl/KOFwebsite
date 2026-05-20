@@ -4,6 +4,8 @@ import HeroSection from '@/components/home/HeroSection';
 import TrustSection from '@/components/home/TrustSection';
 import ManufacturingSection from '@/components/home/ManufacturingSection';
 import CTASection from '@/components/home/CTASection';
+import FAQSection from '@/components/home/FAQSection';
+import AppSection from '@/components/home/AppSection';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { PRODUCTS } from '@/lib/constants';
@@ -270,6 +272,9 @@ export default function HomePage() {
       </section>
 
       <CTASection />
+
+      <FAQSection />
+      <AppSection />
     </>
   );
 }

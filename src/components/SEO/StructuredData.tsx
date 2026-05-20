@@ -10,7 +10,7 @@ export default function StructuredData() {
     foundingDate: '1984-10-26',
     address: {
       '@type': 'PostalAddress',
-      streetAddress: 'KOF Complex, Near APMC Yard',
+      streetAddress: '#29/1, KIADB Industrial Area, Kelagote, Old Bangalore Rd',
       addressLocality: 'Chitradurga',
       addressRegion: 'Karnataka',
       postalCode: '577501',
@@ -39,13 +39,13 @@ export default function StructuredData() {
     email: 'kofcta2@gmail.com',
     address: {
       '@type': 'PostalAddress',
-      streetAddress: 'KOF Complex',
+      streetAddress: '#29/1, KIADB Industrial Area, Kelagote, Old Bangalore Rd',
       addressLocality: 'Chitradurga',
       addressRegion: 'Karnataka',
       postalCode: '577501',
       addressCountry: 'IN',
     },
-    geo: { '@type': 'GeoCoordinates', latitude: 14.22, longitude: 76.38 },
+    geo: { '@type': 'GeoCoordinates', latitude: 14.2226, longitude: 76.3867 },
     openingHoursSpecification: {
       '@type': 'OpeningHoursSpecification',
       dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],

@@ -75,7 +75,7 @@ export default function Footer() {
                   <div className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center flex-shrink-0 mt-0.5">
                     <MapPin size={14} className="text-[var(--kof-gold)]" />
                   </div>
-                  <p className="text-white/50 text-sm leading-relaxed">KOF Complex, Chitradurga, Karnataka - 577501</p>
+                  <p className="text-white/50 text-sm leading-relaxed">#29/1, KIADB Industrial Area, Kelagote, Chitradurga, Karnataka - 577501</p>
                 </div>
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center flex-shrink-0">
