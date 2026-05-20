@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { Menu, X, Leaf, Phone, Mail, ChevronDown } from 'lucide-react';
+import LanguageToggle from '@/components/ui/LanguageToggle';
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -34,6 +35,7 @@ export default function Navbar() {
             <span className="flex items-center gap-1"><Mail size={14} /> kofcta2@gmail.com</span>
           </div>
           <div className="flex items-center gap-4">
+            <LanguageToggle />
             <Link href="/login" className="hover:text-amber-300 transition-colors font-medium">Admin Panel</Link>
           </div>
         </div>

@@ -1,0 +1,9 @@
+# KOF Chitradurga - Robots.txt
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /login
+Disallow: /api/
+
+# Sitemap
+Sitemap: https://kofchitradurga.com/sitemap.xml
