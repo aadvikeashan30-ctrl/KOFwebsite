@@ -1,23 +1,12 @@
 'use client';
 
+import PageHero from '@/components/ui/PageHero';
 import { TrendingUp, Target, Globe, Megaphone, BarChart3, Users, Smartphone, Store } from 'lucide-react';
 
 export default function MarketingPage() {
   return (
     <>
-      <section className="relative py-24 overflow-hidden">
-        <div className="absolute inset-0 gradient-hero" />
-        <div className="max-w-7xl mx-auto px-4 text-center relative">
-          <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md rounded-full px-5 py-2.5 mb-6 border border-white/20">
-            <TrendingUp size={16} className="text-amber-400" />
-            <span className="text-sm font-semibold text-amber-300">Sales & Distribution</span>
-          </div>
-          <h1 className="text-6xl font-black text-white mb-4">Marketing</h1>
-          <p className="text-xl text-green-100/80 max-w-3xl mx-auto">
-            Strategic marketing approach covering digital, retail, and wholesale channels
-          </p>
-        </div>
-      </section>
+      <PageHero icon={TrendingUp} badge="Sales & Distribution" title="Marketing" subtitle="Strategic marketing approach covering digital, retail, and wholesale channels" />
 
       {/* Marketing Strategy */}
       <section className="py-20 bg-white">

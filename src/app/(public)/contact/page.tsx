@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { Phone, Mail, MapPin, Clock, MessageCircle, Globe, Camera, Send } from 'lucide-react';
+import PageHero from '@/components/ui/PageHero';
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -19,18 +20,15 @@ export default function ContactPage() {
 
   return (
     <>
-      {/* Hero */}
-      <section className="gradient-hero py-20 text-white">
-        <div className="max-w-7xl mx-auto px-4 text-center">
-          <h1 className="text-5xl font-bold mb-4">Contact Us</h1>
-          <p className="text-xl text-green-100 max-w-3xl mx-auto">
-            Get in touch with us for orders, distributorship, or any queries
-          </p>
-        </div>
-      </section>
+      <PageHero
+        icon={Phone}
+        badge="Get In Touch"
+        title="Contact Us"
+        subtitle="Get in touch with us for orders, distributorship, or any queries"
+      />
 
-      <section className="py-16 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4">
+      <section className="py-16 bg-[var(--kof-warm-gray)]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="grid lg:grid-cols-3 gap-8">
             {/* Contact Info */}
             <div className="lg:col-span-1 space-y-6">

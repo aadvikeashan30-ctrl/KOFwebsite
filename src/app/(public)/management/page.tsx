@@ -1,5 +1,6 @@
 'use client';
 
+import PageHero from '@/components/ui/PageHero';
 import { Crown, Users, Award, Building2, Star } from 'lucide-react';
 
 const boardMembers = [
@@ -25,26 +26,11 @@ export default function ManagementPage() {
   return (
     <>
       {/* Hero */}
-      <section className="relative py-24 overflow-hidden">
-        <div className="absolute inset-0 gradient-hero" />
-        <div className="absolute inset-0">
-          <div className="absolute top-10 right-10 w-72 h-72 bg-amber-400/10 rounded-full blur-3xl" />
-        </div>
-        <div className="max-w-7xl mx-auto px-4 text-center relative">
-          <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md rounded-full px-5 py-2.5 mb-6 border border-white/20">
-            <Crown size={16} className="text-amber-400" />
-            <span className="text-sm font-semibold text-amber-300">Leadership Team</span>
-          </div>
-          <h1 className="text-6xl font-black text-white mb-4">Our Management</h1>
-          <p className="text-xl text-green-100/80 max-w-3xl mx-auto">
-            Dedicated leaders driving KOF&apos;s mission of empowering farmers and delivering quality to every household
-          </p>
-        </div>
-      </section>
+      <PageHero icon={Crown} badge="Leadership Team" title="Our Management" subtitle="Dedicated leaders driving KOF's mission of empowering farmers and delivering quality to every household" />
 
       {/* Board of Directors */}
-      <section className="py-20 bg-gradient-to-b from-gray-50 to-white">
-        <div className="max-w-7xl mx-auto px-4">
+      <section className="py-20 bg-[var(--kof-warm-gray)]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-14">
             <h2 className="text-4xl font-black text-gray-900 mb-3">Board of Directors</h2>
             <p className="text-gray-500">Elected representatives guiding KOF&apos;s cooperative vision</p>

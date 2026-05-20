@@ -1,18 +1,17 @@
+'use client';
+
 import { Award, Users, Factory, Truck, Target, Eye, Leaf, Calendar, TrendingUp } from 'lucide-react';
+import PageHero from '@/components/ui/PageHero';
 
 export default function AboutPage() {
   return (
     <>
-      {/* Hero */}
-      <section className="gradient-hero py-20 text-white">
-        <div className="max-w-7xl mx-auto px-4 text-center">
-          <h1 className="text-5xl font-bold mb-4">About KOF Chitradurga</h1>
-          <p className="text-xl text-green-100 max-w-3xl mx-auto">
-            Regional Oilseeds Growers&apos; Co-operative Society Union Ltd. - 
-            Empowering farmers and producing quality edible oils since 1984
-          </p>
-        </div>
-      </section>
+      <PageHero
+        icon={Leaf}
+        badge="Our Legacy"
+        title="About KOF Chitradurga"
+        subtitle="Regional Oilseeds Growers' Co-operative Society Union Ltd. — Empowering farmers and producing quality edible oils since 1984"
+      />
 
       {/* History */}
       <section className="py-16 bg-white">

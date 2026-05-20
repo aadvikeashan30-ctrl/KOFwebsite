@@ -1,17 +1,17 @@
+'use client';
+
 import { Sprout, Factory, Truck, FlaskConical, Users, BookOpen } from 'lucide-react';
+import PageHero from '@/components/ui/PageHero';
 
 export default function ActivitiesPage() {
   return (
     <>
-      {/* Hero */}
-      <section className="gradient-hero py-20 text-white">
-        <div className="max-w-7xl mx-auto px-4 text-center">
-          <h1 className="text-5xl font-bold mb-4">Our Activities</h1>
-          <p className="text-xl text-green-100 max-w-3xl mx-auto">
-            From seed procurement to oil marketing - our complete value chain for farmers and consumers
-          </p>
-        </div>
-      </section>
+      <PageHero
+        icon={Sprout}
+        badge="Farm to Family"
+        title="Our Activities"
+        subtitle="From seed procurement to oil marketing — our complete value chain for farmers and consumers"
+      />
 
       {/* Main Activities */}
       <section className="py-16 bg-white">

@@ -1,5 +1,6 @@
 'use client';
 
+import PageHero from '@/components/ui/PageHero';
 import { MapPin, Phone, Clock, Building2, Globe } from 'lucide-react';
 
 const offices = [
@@ -13,21 +14,9 @@ const offices = [
 export default function OfficesPage() {
   return (
     <>
-      <section className="relative py-24 overflow-hidden">
-        <div className="absolute inset-0 gradient-hero" />
-        <div className="max-w-7xl mx-auto px-4 text-center relative">
-          <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md rounded-full px-5 py-2.5 mb-6 border border-white/20">
-            <Building2 size={16} className="text-amber-400" />
-            <span className="text-sm font-semibold text-amber-300">Our Locations</span>
-          </div>
-          <h1 className="text-6xl font-black text-white mb-4">Our Offices</h1>
-          <p className="text-xl text-green-100/80 max-w-3xl mx-auto">
-            Strategically located across 4 districts for maximum farmer and customer reach
-          </p>
-        </div>
-      </section>
+      <PageHero icon={Building2} badge="Our Locations" title="Our Offices" subtitle="Strategically located across 4 districts for maximum farmer and customer reach" />
 
-      <section className="py-20 bg-gradient-to-b from-gray-50 to-white">
+      <section className="py-20 bg-[var(--kof-warm-gray)]">
         <div className="max-w-7xl mx-auto px-4">
           <div className="grid gap-8">
             {offices.map((office, idx) => (

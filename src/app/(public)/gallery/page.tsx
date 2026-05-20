@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import PageHero from '@/components/ui/PageHero';
 import { Camera, X, Droplets, Factory, Sprout, Truck, Users, Award } from 'lucide-react';
 
 const galleryItems = [
@@ -29,22 +30,10 @@ export default function GalleryPage() {
 
   return (
     <>
-      <section className="relative py-24 overflow-hidden">
-        <div className="absolute inset-0 gradient-hero" />
-        <div className="max-w-7xl mx-auto px-4 text-center relative">
-          <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md rounded-full px-5 py-2.5 mb-6 border border-white/20">
-            <Camera size={16} className="text-amber-400" />
-            <span className="text-sm font-semibold text-amber-300">Photo Gallery</span>
-          </div>
-          <h1 className="text-6xl font-black text-white mb-4">Gallery</h1>
-          <p className="text-xl text-green-100/80 max-w-3xl mx-auto">
-            A visual journey through our facilities, products, and farmer programs
-          </p>
-        </div>
-      </section>
+      <PageHero icon={Camera} badge="Photo Gallery" title="Gallery" subtitle="A visual journey through our facilities, products, and farmer programs" />
 
-      <section className="py-20 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4">
+      <section className="py-20 bg-[var(--kof-warm-gray)]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
           {/* Filter */}
           <div className="flex flex-wrap justify-center gap-2 mb-12">
             {categories.map((cat) => (
