@@ -122,7 +122,58 @@ function initializeDatabase() {
       expires_at TEXT,
       FOREIGN KEY (created_by) REFERENCES users(id)
     );
+
+    CREATE TABLE IF NOT EXISTS pricing (
+      id TEXT PRIMARY KEY,
+      product_name TEXT NOT NULL,
+      product_id TEXT NOT NULL,
+      retail_price REAL NOT NULL,
+      bulk_price REAL NOT NULL,
+      tin_price REAL NOT NULL,
+      unit TEXT DEFAULT 'per litre',
+      updated_at TEXT DEFAULT (datetime('now')),
+      updated_by TEXT,
+      FOREIGN KEY (updated_by) REFERENCES users(id)
+    );
+
+    CREATE TABLE IF NOT EXISTS recruitments (
+      id TEXT PRIMARY KEY,
+      title TEXT NOT NULL,
+      department TEXT NOT NULL,
+      location TEXT NOT NULL,
+      type TEXT DEFAULT 'Full-time',
+      description TEXT,
+      requirements TEXT,
+      salary_range TEXT,
+      deadline TEXT,
+      status TEXT DEFAULT 'active' CHECK(status IN ('active', 'closed', 'draft')),
+      created_by TEXT,
+      created_at TEXT DEFAULT (datetime('now')),
+      FOREIGN KEY (created_by) REFERENCES users(id)
+    );
+
+    CREATE TABLE IF NOT EXISTS gallery (
+      id TEXT PRIMARY KEY,
+      title TEXT NOT NULL,
+      category TEXT NOT NULL,
+      description TEXT,
+      image_url TEXT,
+      sort_order INTEGER DEFAULT 0,
+      published INTEGER DEFAULT 1,
+      created_at TEXT DEFAULT (datetime('now'))
+    );
   `);
+
+  // Seed pricing if empty
+  const pricingCount = (db.prepare('SELECT COUNT(*) as count FROM pricing').get() as any).count;
+  if (pricingCount === 0) {
+    const insertPrice = db.prepare('INSERT INTO pricing (id, product_name, product_id, retail_price, bulk_price, tin_price) VALUES (?, ?, ?, ?, ?, ?)');
+    insertPrice.run('price-1', 'Sungold Sunflower Oil', 'sungold-sunflower', 155, 145, 7250);
+    insertPrice.run('price-2', 'Safal Groundnut Oil', 'safal-groundnut', 190, 180, 9000);
+    insertPrice.run('price-3', 'Safal Palmolein Oil', 'safal-palmolein', 110, 100, 5000);
+    insertPrice.run('price-4', 'Safal Soyabean Oil', 'safal-soyabean', 140, 130, 6500);
+    insertPrice.run('price-5', 'Safal Rice Bran Oil', 'safal-ricebran', 165, 155, 7750);
+  }
 
   // Create default admin if not exists
   const adminExists = db.prepare('SELECT id FROM users WHERE role = ?').get('admin');

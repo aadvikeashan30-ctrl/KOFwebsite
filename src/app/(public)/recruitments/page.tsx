@@ -1,16 +1,19 @@
 'use client';
 
-import { Briefcase, MapPin, Clock, IndianRupee, Send, Users, CheckCircle } from 'lucide-react';
-
-const openPositions = [
-  { title: 'District Marketing Officer', department: 'Marketing', location: 'Davangere', type: 'Full-time', salary: '₹35,000 - ₹45,000/month', experience: '3-5 years', deadline: '2026-06-30', description: 'Drive sales and distribution in Davangere district. Manage distributor network and retail outlets.' },
-  { title: 'Quality Control Analyst', department: 'Quality', location: 'Chitradurga', type: 'Full-time', salary: '₹28,000 - ₹35,000/month', experience: '2-4 years', deadline: '2026-06-15', description: 'Monitor oil quality parameters, conduct lab tests, ensure AGMARK compliance.' },
-  { title: 'Field Officer - Procurement', department: 'Procurement', location: 'Haveri', type: 'Full-time', salary: '₹25,000 - ₹32,000/month', experience: '1-3 years', deadline: '2026-06-20', description: 'Visit OGCS and farmers, coordinate oilseed procurement, ensure fair weighing.' },
-  { title: 'Digital Marketing Executive', department: 'Marketing', location: 'Chitradurga', type: 'Full-time', salary: '₹30,000 - ₹40,000/month', experience: '2-3 years', deadline: '2026-07-01', description: 'Manage social media, run ad campaigns, create content for Instagram & Facebook.' },
-  { title: 'Accounts Assistant', department: 'Finance', location: 'Chitradurga', type: 'Full-time', salary: '₹22,000 - ₹28,000/month', experience: '1-2 years (Tally required)', deadline: '2026-06-25', description: 'Manage daily accounts, invoicing, and assist with Tally ERP operations.' },
-];
+import { useEffect, useState } from 'react';
+import { Briefcase, MapPin, Clock, Send, Users, CheckCircle, IndianRupee, Loader2 } from 'lucide-react';
 
 export default function RecruitmentsPage() {
+  const [jobs, setJobs] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch('/api/public/recruitments')
+      .then(r => r.json())
+      .then(data => setJobs(data.jobs || []))
+      .finally(() => setLoading(false));
+  }, []);
+
   return (
     <>
       <section className="relative py-24 overflow-hidden">
@@ -48,46 +51,60 @@ export default function RecruitmentsPage() {
         </div>
       </section>
 
-      {/* Open Positions */}
+      {/* Dynamic Job Listings */}
       <section className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4">
-          <h2 className="text-3xl font-black text-gray-900 mb-2">Open Positions</h2>
-          <p className="text-gray-500 mb-10">Current openings at KOF Chitradurga and branch offices</p>
+          <h2 className="text-3xl font-black text-gray-900 mb-2">Current Openings</h2>
+          <p className="text-gray-500 mb-10">Positions posted by KOF administration</p>
 
-          <div className="space-y-6">
-            {openPositions.map((job, idx) => (
-              <div key={idx} className="bg-white rounded-2xl border border-gray-100 hover:border-green-200 p-6 hover:shadow-lg transition-all">
-                <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 flex-wrap mb-2">
-                      <h3 className="font-bold text-xl text-gray-900">{job.title}</h3>
-                      <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full font-semibold">{job.type}</span>
+          {loading ? (
+            <div className="flex items-center justify-center py-20">
+              <Loader2 size={32} className="text-green-700 animate-spin" />
+            </div>
+          ) : jobs.length === 0 ? (
+            <div className="bg-white rounded-3xl border border-gray-100 p-12 text-center">
+              <Briefcase size={56} className="text-gray-300 mx-auto mb-4" />
+              <h3 className="text-xl font-bold text-gray-900 mb-2">No Open Positions Currently</h3>
+              <p className="text-gray-500 max-w-md mx-auto">
+                We don&apos;t have any openings right now. Follow us on social media or check back later for new opportunities.
+              </p>
+              <a href="mailto:kofcta2@gmail.com" className="inline-block mt-6 text-green-700 font-semibold hover:underline">
+                Send your resume to kofcta2@gmail.com
+              </a>
+            </div>
+          ) : (
+            <div className="space-y-6">
+              {jobs.map((job) => (
+                <div key={job.id} className="bg-white rounded-2xl border border-gray-100 hover:border-green-200 p-6 hover:shadow-lg transition-all">
+                  <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 flex-wrap mb-2">
+                        <h3 className="font-bold text-xl text-gray-900">{job.title}</h3>
+                        <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full font-semibold">{job.type}</span>
+                      </div>
+                      {job.description && <p className="text-sm text-gray-600 mb-3">{job.description}</p>}
+                      {job.requirements && <p className="text-xs text-gray-500 mb-3">Requirements: {job.requirements}</p>}
+                      <div className="flex flex-wrap gap-4 text-sm text-gray-500">
+                        <span className="flex items-center gap-1"><Briefcase size={14} /> {job.department}</span>
+                        <span className="flex items-center gap-1"><MapPin size={14} /> {job.location}</span>
+                        {job.salary_range && <span className="flex items-center gap-1"><IndianRupee size={14} /> {job.salary_range}</span>}
+                        {job.deadline && <span className="flex items-center gap-1"><Clock size={14} /> Deadline: {job.deadline}</span>}
+                      </div>
                     </div>
-                    <p className="text-sm text-gray-600 mb-3">{job.description}</p>
-                    <div className="flex flex-wrap gap-4 text-sm text-gray-500">
-                      <span className="flex items-center gap-1"><Briefcase size={14} /> {job.department}</span>
-                      <span className="flex items-center gap-1"><MapPin size={14} /> {job.location}</span>
-                      <span className="flex items-center gap-1"><IndianRupee size={14} /> {job.salary}</span>
-                      <span className="flex items-center gap-1"><Clock size={14} /> Exp: {job.experience}</span>
-                    </div>
-                  </div>
-                  <div className="flex flex-col items-end gap-2">
-                    <p className="text-xs text-red-600 font-medium">Deadline: {job.deadline}</p>
-                    <a href={`https://wa.me/916366975382?text=Hi, I want to apply for the position: ${job.title} at ${job.location}`}
+                    <a href={`https://wa.me/916366975382?text=Hi, I want to apply for: ${job.title} at ${job.location}`}
                        target="_blank" rel="noopener noreferrer"
-                       className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white text-sm font-bold px-5 py-2.5 rounded-xl flex items-center gap-2 shadow-lg">
+                       className="flex-shrink-0 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white text-sm font-bold px-5 py-2.5 rounded-xl flex items-center gap-2 shadow-lg">
                       <Send size={14} /> Apply Now
                     </a>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
 
           <div className="mt-12 bg-amber-50 rounded-2xl p-8 border border-amber-200 text-center">
-            <h3 className="font-bold text-xl text-gray-900 mb-2">Don&apos;t see a matching role?</h3>
-            <p className="text-gray-600 mb-4">Send your resume to <strong>kofcta2@gmail.com</strong> with subject &quot;General Application - [Your Name]&quot;</p>
-            <p className="text-sm text-gray-500">We keep all applications on file and reach out when suitable positions open.</p>
+            <h3 className="font-bold text-xl text-gray-900 mb-2">Interested in working with us?</h3>
+            <p className="text-gray-600 mb-4">Send your resume to <strong>kofcta2@gmail.com</strong> — we reach out when suitable positions open.</p>
           </div>
         </div>
       </section>

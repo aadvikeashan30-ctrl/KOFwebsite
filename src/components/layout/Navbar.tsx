@@ -34,8 +34,7 @@ export default function Navbar() {
             <span className="flex items-center gap-1"><Mail size={14} /> kofcta2@gmail.com</span>
           </div>
           <div className="flex items-center gap-4">
-            <Link href="/login" className="hover:text-amber-300 transition-colors font-medium">Employee Portal</Link>
-            <Link href="/login?role=admin" className="hover:text-amber-300 transition-colors font-medium">Admin Login</Link>
+            <Link href="/login" className="hover:text-amber-300 transition-colors font-medium">Admin Panel</Link>
           </div>
         </div>
       </div>
@@ -79,7 +78,7 @@ export default function Navbar() {
                 </div>
               ))}
               <Link href="/login" className="btn-primary ml-3 text-xs py-2 px-4">
-                Portal Login
+                Admin
               </Link>
             </div>
 
@@ -109,7 +108,7 @@ export default function Navbar() {
             ))}
             <div className="mt-4 pt-4 border-t border-gray-100 flex flex-col gap-2">
               <Link href="/login" onClick={() => setIsOpen(false)} className="btn-primary text-center text-sm">
-                Employee Login
+                Admin Panel
               </Link>
             </div>
           </div>

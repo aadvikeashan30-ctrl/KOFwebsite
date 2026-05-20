@@ -2,7 +2,7 @@
 
 import { Check, ShoppingCart, Star, Sparkles } from 'lucide-react';
 import { PRODUCTS } from '@/lib/constants';
-import ProductImage from '@/components/products/ProductImage';
+import Product3D from '@/components/products/Product3D';
 
 export default function ProductsPage() {
   const typeMap: Record<string, 'sunflower' | 'groundnut' | 'palmolein' | 'soyabean' | 'ricebran' | 'deoiled'> = {
@@ -45,7 +45,7 @@ export default function ProductsPage() {
                 {/* Product Image */}
                 <div className="relative h-72 bg-gradient-to-br from-gray-50 via-green-50/20 to-amber-50/20 flex items-center justify-center overflow-hidden">
                   <div className="absolute inset-0 bg-gradient-to-t from-white/80 to-transparent z-10 opacity-0 group-hover:opacity-100 transition-opacity" />
-                  <ProductImage type={typeMap[product.id] || 'sunflower'} className="w-40 h-56 group-hover:scale-125 transition-transform duration-700" />
+                  <Product3D type={typeMap[product.id] || 'sunflower'} className="w-40 h-56 group-hover:scale-125 transition-transform duration-700" />
                   <div className="absolute top-4 left-4 z-20 bg-green-700 text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-lg">
                     {product.category}
                   </div>
