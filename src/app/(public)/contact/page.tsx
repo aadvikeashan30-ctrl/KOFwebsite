@@ -282,16 +282,16 @@ export default function ContactPage() {
       <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4">
           <h2 className="text-3xl font-bold text-gray-900 text-center mb-8">Find Us</h2>
-          <div className="rounded-2xl overflow-hidden shadow-lg h-[400px] bg-gray-200">
+          <div className="rounded-2xl overflow-hidden shadow-lg h-[450px] bg-gray-200 border border-gray-200">
             <iframe
-              src="https://www.google.com/maps?q=KIADB+Industrial+Area,+Kelagote,+Old+Bangalore+Road,+Chitradurga,+Karnataka+577501&output=embed"
+              src="https://maps.google.com/maps?width=100%25&height=450&hl=en&q=KIADB%20Industrial%20Area%2C%20Kelagote%2C%20Old%20Bangalore%20Road%2C%20Chitradurga%2C%20Karnataka%20577501&t=&z=15&ie=UTF8&iwloc=B&output=embed"
               width="100%"
               height="100%"
               style={{ border: 0 }}
               allowFullScreen
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
-              title="KOF Chitradurga Location - KIADB Industrial Area, Kelagote"
+              title="KOF Chitradurga - KIADB Industrial Area, Kelagote"
             />
           </div>
           <div className="mt-4 bg-green-50 border border-green-200 rounded-xl p-4 text-center">

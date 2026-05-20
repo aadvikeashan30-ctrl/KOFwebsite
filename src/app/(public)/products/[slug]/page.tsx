@@ -23,25 +23,33 @@ interface Product {
   images: string[];
   certifications: string[];
   health_benefits: string[];
-  nutrition_vitamins: string[];
-  nutrition_minerals: string[];
-  price_range?: string;
+  nutrition_vitamins: Array<string | { name: string; amount?: string; dv?: string }>;
+  nutrition_minerals: Array<string | { name: string; amount?: string; dv?: string }>;
+  retail_price?: number;
+  bulk_price?: number;
+  tin_price?: number;
   weight?: string;
   packaging?: string;
+  packaging_type?: string;
   shelf_life?: string;
   manufacturer?: string;
   sku?: string;
   storage_info?: string;
+  storage_instructions?: string;
   usage_info?: string;
   stock_status?: string;
-  nutrition_calories?: string;
-  nutrition_fat?: string;
-  nutrition_saturated_fat?: string;
-  nutrition_trans_fat?: string;
-  nutrition_protein?: string;
-  nutrition_carbs?: string;
-  nutrition_fiber?: string;
-  nutrition_sodium?: string;
+  nutrition_calories?: string | number;
+  nutrition_fat?: string | number;
+  nutrition_total_fat?: string | number;
+  nutrition_saturated_fat?: string | number;
+  nutrition_trans_fat?: string | number;
+  nutrition_cholesterol?: string | number;
+  nutrition_protein?: string | number;
+  nutrition_carbs?: string | number;
+  nutrition_carbohydrates?: string | number;
+  nutrition_fiber?: string | number;
+  nutrition_sodium?: string | number;
+  ingredients?: string;
   published: number;
   sort_order: number;
   created_at: string;
@@ -244,14 +252,37 @@ export default function ProductDetailPage() {
                 {product.short_description || product.description}
               </p>
 
-              {/* Price */}
-              {product.price_range && (
+              {/* Price - LIVE from admin DB */}
+              {(product.retail_price || product.bulk_price) && (
                 <div className="bg-[var(--kof-forest)]/5 rounded-2xl p-5 border border-[var(--kof-forest)]/10">
-                  <p className="text-xs text-gray-500 font-semibold uppercase tracking-wider mb-1">Price Range</p>
-                  <p className="text-3xl font-black text-[var(--kof-forest)] font-[family-name:var(--font-poppins)]">
-                    {product.price_range}
-                  </p>
-                  <p className="text-xs text-gray-400 mt-1">*Prices may vary by location and quantity</p>
+                  <p className="text-xs text-gray-500 font-semibold uppercase tracking-wider mb-2">Live Pricing</p>
+                  <div className="flex flex-wrap items-baseline gap-4">
+                    {product.retail_price ? (
+                      <div>
+                        <p className="text-3xl font-black text-[var(--kof-forest)] font-[family-name:var(--font-poppins)]">
+                          ₹{product.retail_price}<span className="text-base font-semibold text-gray-500">/L</span>
+                        </p>
+                        <p className="text-[10px] text-gray-400 uppercase tracking-wider">Retail</p>
+                      </div>
+                    ) : null}
+                    {product.bulk_price ? (
+                      <div>
+                        <p className="text-xl font-bold text-emerald-700">
+                          ₹{product.bulk_price}<span className="text-sm font-medium text-gray-500">/L</span>
+                        </p>
+                        <p className="text-[10px] text-gray-400 uppercase tracking-wider">Bulk</p>
+                      </div>
+                    ) : null}
+                    {product.tin_price ? (
+                      <div>
+                        <p className="text-xl font-bold text-amber-700">
+                          ₹{product.tin_price}
+                        </p>
+                        <p className="text-[10px] text-gray-400 uppercase tracking-wider">15L Tin</p>
+                      </div>
+                    ) : null}
+                  </div>
+                  <p className="text-xs text-gray-400 mt-2">*Prices updated live by KOF admin</p>
                 </div>
               )}
 
@@ -376,11 +407,12 @@ export default function ProductDetailPage() {
                       <tbody>
                         {[
                           { label: 'Weight/Volume', value: product.weight, icon: <Package size={14} /> },
-                          { label: 'Packaging', value: product.packaging, icon: <Package size={14} /> },
+                          { label: 'Packaging', value: product.packaging || product.packaging_type, icon: <Package size={14} /> },
                           { label: 'Shelf Life', value: product.shelf_life, icon: <Clock size={14} /> },
+                          { label: 'Ingredients', value: product.ingredients, icon: <Leaf size={14} /> },
                           { label: 'Manufacturer', value: product.manufacturer || 'KOF Chitradurga', icon: <Shield size={14} /> },
                           { label: 'SKU', value: product.sku, icon: <Info size={14} /> },
-                          { label: 'Storage', value: product.storage_info || 'Store in a cool, dry place away from direct sunlight', icon: <Package size={14} /> },
+                          { label: 'Storage', value: product.storage_info || product.storage_instructions || 'Store in a cool, dry place away from direct sunlight', icon: <Package size={14} /> },
                           { label: 'Usage', value: product.usage_info || 'Suitable for cooking, frying, and seasoning', icon: <Info size={14} /> },
                         ].filter(spec => spec.value).map((spec, idx) => (
                           <tr key={spec.label} className={idx % 2 === 0 ? 'bg-gray-50/50' : 'bg-white'}>
@@ -422,14 +454,14 @@ export default function ProductDetailPage() {
                       </thead>
                       <tbody>
                         {[
-                          { label: 'Calories', value: product.nutrition_calories || '884 kcal' },
-                          { label: 'Total Fat', value: product.nutrition_fat || '100g' },
-                          { label: 'Saturated Fat', value: product.nutrition_saturated_fat || '12g' },
-                          { label: 'Trans Fat', value: product.nutrition_trans_fat || '0g' },
-                          { label: 'Protein', value: product.nutrition_protein || '0g' },
-                          { label: 'Carbohydrates', value: product.nutrition_carbs || '0g' },
-                          { label: 'Dietary Fiber', value: product.nutrition_fiber || '0g' },
-                          { label: 'Sodium', value: product.nutrition_sodium || '0mg' },
+                          { label: 'Calories', value: product.nutrition_calories ? `${product.nutrition_calories} kcal` : '884 kcal' },
+                          { label: 'Total Fat', value: product.nutrition_total_fat ? `${product.nutrition_total_fat}g` : (product.nutrition_fat ? `${product.nutrition_fat}g` : '100g') },
+                          { label: 'Saturated Fat', value: product.nutrition_saturated_fat ? `${product.nutrition_saturated_fat}g` : '12g' },
+                          { label: 'Trans Fat', value: product.nutrition_trans_fat ? `${product.nutrition_trans_fat}g` : '0g' },
+                          { label: 'Cholesterol', value: product.nutrition_cholesterol ? `${product.nutrition_cholesterol}mg` : '0mg' },
+                          { label: 'Protein', value: product.nutrition_protein ? `${product.nutrition_protein}g` : '0g' },
+                          { label: 'Carbohydrates', value: product.nutrition_carbohydrates ? `${product.nutrition_carbohydrates}g` : (product.nutrition_carbs ? `${product.nutrition_carbs}g` : '0g') },
+                          { label: 'Sodium', value: product.nutrition_sodium ? `${product.nutrition_sodium}mg` : '0mg' },
                         ].map((row, idx) => (
                           <tr key={row.label} className={idx % 2 === 0 ? 'bg-white' : 'bg-gray-50/50'}>
                             <td className="px-5 py-3 text-sm font-medium text-gray-700">{row.label}</td>
@@ -450,12 +482,18 @@ export default function ProductDetailPage() {
                         Vitamins
                       </h4>
                       <div className="space-y-2">
-                        {product.nutrition_vitamins.map((vitamin: string) => (
-                          <div key={vitamin} className="flex items-center gap-2 bg-amber-50 rounded-xl px-4 py-2.5 border border-amber-100">
-                            <Leaf size={14} className="text-amber-600 flex-shrink-0" />
-                            <span className="text-sm font-medium text-amber-800">{vitamin}</span>
+                        {product.nutrition_vitamins.map((vitamin, vIdx) => {
+                          const v = typeof vitamin === 'string' ? { name: vitamin } : vitamin;
+                          return (
+                          <div key={`${v.name}-${vIdx}`} className="flex items-center justify-between gap-2 bg-amber-50 rounded-xl px-4 py-2.5 border border-amber-100">
+                            <div className="flex items-center gap-2">
+                              <Leaf size={14} className="text-amber-600 flex-shrink-0" />
+                              <span className="text-sm font-medium text-amber-800">{v.name}</span>
+                            </div>
+                            {v.amount && <span className="text-xs text-amber-700 font-semibold">{v.amount}</span>}
                           </div>
-                        ))}
+                          );
+                        })}
                       </div>
                     </div>
                   )}
@@ -466,12 +504,18 @@ export default function ProductDetailPage() {
                         Minerals
                       </h4>
                       <div className="space-y-2">
-                        {product.nutrition_minerals.map((mineral: string) => (
-                          <div key={mineral} className="flex items-center gap-2 bg-emerald-50 rounded-xl px-4 py-2.5 border border-emerald-100">
-                            <Shield size={14} className="text-emerald-600 flex-shrink-0" />
-                            <span className="text-sm font-medium text-emerald-800">{mineral}</span>
+                        {product.nutrition_minerals.map((mineral, mIdx) => {
+                          const m = typeof mineral === 'string' ? { name: mineral } : mineral;
+                          return (
+                          <div key={`${m.name}-${mIdx}`} className="flex items-center justify-between gap-2 bg-emerald-50 rounded-xl px-4 py-2.5 border border-emerald-100">
+                            <div className="flex items-center gap-2">
+                              <Shield size={14} className="text-emerald-600 flex-shrink-0" />
+                              <span className="text-sm font-medium text-emerald-800">{m.name}</span>
+                            </div>
+                            {m.amount && <span className="text-xs text-emerald-700 font-semibold">{m.amount}</span>}
                           </div>
-                        ))}
+                          );
+                        })}
                       </div>
                     </div>
                   )}
@@ -633,9 +677,9 @@ export default function ProductDetailPage() {
                           {related.name}
                         </h3>
                         <p className="text-sm text-gray-500 line-clamp-2">{related.short_description || related.description}</p>
-                        {related.price_range && (
-                          <p className="text-lg font-bold text-[var(--kof-forest)] mt-2">{related.price_range}</p>
-                        )}
+                        {related.retail_price ? (
+                          <p className="text-lg font-bold text-[var(--kof-forest)] mt-2">₹{related.retail_price}/L</p>
+                        ) : null}
                       </div>
                     </div>
                   </Link>
