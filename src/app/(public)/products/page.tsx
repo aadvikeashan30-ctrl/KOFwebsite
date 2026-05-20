@@ -1,7 +1,9 @@
 'use client';
 
 import { Check, ShoppingCart, Star, Sparkles } from 'lucide-react';
+import Image from 'next/image';
 import { PRODUCTS } from '@/lib/constants';
+import { IMAGES } from '@/lib/images';
 import Product3D from '@/components/products/Product3D';
 
 export default function ProductsPage() {
@@ -42,10 +44,13 @@ export default function ProductsPage() {
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
             {PRODUCTS.map((product) => (
               <div key={product.id} className="group bg-white rounded-3xl shadow-xl shadow-gray-200/50 hover:shadow-2xl hover:shadow-green-100/50 transition-all duration-500 overflow-hidden border border-gray-100 hover:border-green-200 hover:-translate-y-3">
-                {/* Product Image */}
+                {/* Product Image with real photo bg */}
                 <div className="relative h-72 bg-gradient-to-br from-gray-50 via-green-50/20 to-amber-50/20 flex items-center justify-center overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-t from-white/80 to-transparent z-10 opacity-0 group-hover:opacity-100 transition-opacity" />
-                  <Product3D type={typeMap[product.id] || 'sunflower'} className="w-40 h-56 group-hover:scale-125 transition-transform duration-700" />
+                  <Image src={IMAGES.products.sunflowerOil} alt={product.name} fill className="object-cover opacity-15 group-hover:opacity-25 group-hover:scale-110 transition-all duration-700" sizes="(max-width:768px) 100vw, 33vw" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-white/90 via-white/50 to-transparent z-[1]" />
+                  <div className="relative z-[2]">
+                    <Product3D type={typeMap[product.id] || 'sunflower'} className="w-36 h-52 group-hover:scale-110 transition-transform duration-500" />
+                  </div>
                   <div className="absolute top-4 left-4 z-20 bg-green-700 text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-lg">
                     {product.category}
                   </div>
