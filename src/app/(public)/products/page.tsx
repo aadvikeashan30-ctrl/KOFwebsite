@@ -2,9 +2,11 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Check, ShoppingCart, Star, Sparkles, ChevronRight, ArrowRight, Loader2 } from 'lucide-react';
+import { Check, ShoppingCart, Star, Sparkles, ArrowRight, Loader2 } from 'lucide-react';
 import { PRODUCTS } from '@/lib/constants';
 import Product3D from '@/components/products/Product3D';
+import Tilt3DCard from '@/components/ui/Tilt3DCard';
+import Floating3DOrbs from '@/components/ui/Floating3DOrbs';
 import Link from 'next/link';
 
 interface PriceData {
@@ -105,7 +107,8 @@ export default function ProductsPage() {
       </section>
 
       {/* Products Grid */}
-      <section className="py-20 lg:py-28 bg-[var(--kof-warm-gray)] relative overflow-hidden">
+      <section className="py-20 lg:py-28 bg-[var(--kof-warm-gray)] relative overflow-hidden" style={{ perspective: '1500px' }}>
+        <Floating3DOrbs count={5} variant="mixed" intensity="subtle" />
         <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-emerald-100/40 rounded-full blur-3xl" />
         <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-amber-100/30 rounded-full blur-3xl" />
 
@@ -116,29 +119,36 @@ export default function ProductsPage() {
               return (
               <motion.div
                 key={product.id}
-                initial={{ opacity: 0, y: 40 }}
-                whileInView={{ opacity: 1, y: 0 }}
+                initial={{ opacity: 0, y: 60, rotateX: -15 }}
+                whileInView={{ opacity: 1, y: 0, rotateX: 0 }}
                 viewport={{ once: true, margin: "-60px" }}
-                transition={{ delay: idx * 0.08, duration: 0.6 }}
+                transition={{ delay: idx * 0.08, duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+                style={{ transformStyle: 'preserve-3d' }}
               >
-                <div className="card-premium group h-full hover-tilt">
+                <Tilt3DCard intensity={14} glowColor="#0E5A3A" scale={1.03} className="h-full">
+                <div className="card-premium group h-full">
                   {/* Product Image Area */}
                   <div className="relative h-64 sm:h-72 bg-gradient-to-br from-[var(--kof-cream)] via-white to-emerald-50/30 flex items-center justify-center overflow-hidden">
                     <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'radial-gradient(circle, #0E5A3A 1px, transparent 1px)', backgroundSize: '20px 20px' }} />
-                    <div className="relative z-[2] group-hover:scale-110 transition-transform duration-700 ease-out">
+                    <motion.div
+                      animate={{ y: [0, -10, 0], rotateY: [0, 10, 0, -10, 0] }}
+                      transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
+                      style={{ transformStyle: 'preserve-3d', transform: 'translateZ(50px)' }}
+                      className="relative z-[2] group-hover:scale-115 transition-transform duration-700 ease-out"
+                    >
                       <Product3D type={typeMap[product.id] || 'sunflower'} className="w-32 h-48 sm:w-36 sm:h-52" />
-                    </div>
+                    </motion.div>
                     <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent z-[1] opacity-0 group-hover:opacity-60 transition-opacity duration-500" />
-                    <div className="absolute top-4 left-4 z-20 bg-[var(--kof-forest)] text-white text-[10px] font-bold px-3 py-1.5 rounded-full shadow-lg uppercase tracking-wider">
+                    <div className="absolute top-4 left-4 z-20 bg-[var(--kof-forest)] text-white text-[10px] font-bold px-3 py-1.5 rounded-full shadow-lg uppercase tracking-wider" style={{ transform: 'translateZ(40px)' }}>
                       {product.category}
                     </div>
-                    <div className="absolute top-4 right-4 z-20 flex items-center gap-1 gradient-gold text-[var(--kof-charcoal)] text-[10px] font-bold px-2.5 py-1.5 rounded-full shadow-lg">
+                    <div className="absolute top-4 right-4 z-20 flex items-center gap-1 gradient-gold text-[var(--kof-charcoal)] text-[10px] font-bold px-2.5 py-1.5 rounded-full shadow-lg" style={{ transform: 'translateZ(40px)' }}>
                       <Star size={9} className="fill-current" /> AGMARK
                     </div>
                   </div>
 
                   {/* Content */}
-                  <div className="p-6 sm:p-7">
+                  <div className="p-6 sm:p-7" style={{ transform: 'translateZ(20px)', transformStyle: 'preserve-3d' }}>
                     <h3 className="font-bold text-lg sm:text-xl text-[var(--kof-charcoal)] mb-2 group-hover:text-[var(--kof-forest)] transition-colors font-[family-name:var(--font-poppins)]">
                       {product.name}
                     </h3>
@@ -202,6 +212,7 @@ export default function ProductsPage() {
                     </div>
                   </div>
                 </div>
+                </Tilt3DCard>
               </motion.div>
               );
             })}

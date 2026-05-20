@@ -1,17 +1,19 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import HeroSection from '@/components/home/HeroSection';
+import Hero3DSection from '@/components/home/Hero3DSection';
 import TrustSection from '@/components/home/TrustSection';
 import ManufacturingSection from '@/components/home/ManufacturingSection';
 import CTASection from '@/components/home/CTASection';
 import FAQSection from '@/components/home/FAQSection';
 import AppSection from '@/components/home/AppSection';
+import Tilt3DCard from '@/components/ui/Tilt3DCard';
+import Floating3DOrbs from '@/components/ui/Floating3DOrbs';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { PRODUCTS } from '@/lib/constants';
-import ProductImage from '@/components/products/ProductImage';
-import { ChevronRight, Star, MapPin, Phone, Heart, Leaf } from 'lucide-react';
+import Product3D from '@/components/products/Product3D';
+import { ChevronRight, Star, MapPin, Heart, Leaf } from 'lucide-react';
 
 interface PriceData {
   product_id: string;
@@ -44,7 +46,7 @@ export default function HomePage() {
 
   return (
     <>
-      <HeroSection />
+      <Hero3DSection />
 
       {/* Brand Marquee */}
       <div className="py-5 bg-[var(--kof-forest-deep)] border-y border-white/5 overflow-hidden">
@@ -60,7 +62,8 @@ export default function HomePage() {
       <TrustSection />
 
       {/* Products Section */}
-      <section className="py-24 lg:py-32 bg-[var(--kof-cream)] relative overflow-hidden">
+      <section className="py-24 lg:py-32 bg-[var(--kof-cream)] relative overflow-hidden" style={{ perspective: '1500px' }}>
+        <Floating3DOrbs count={4} variant="mixed" intensity="subtle" />
         <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-emerald-100/40 rounded-full blur-3xl" />
         <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-amber-100/40 rounded-full blur-3xl" />
 
@@ -87,32 +90,50 @@ export default function HomePage() {
             {PRODUCTS.slice(0, 6).map((product, idx) => (
               <motion.div
                 key={product.id}
-                initial={{ opacity: 0, y: 40 }}
-                whileInView={{ opacity: 1, y: 0 }}
+                initial={{ opacity: 0, y: 60, rotateX: -15 }}
+                whileInView={{ opacity: 1, y: 0, rotateX: 0 }}
                 viewport={{ once: true, margin: "-50px" }}
-                transition={{ delay: idx * 0.08, duration: 0.6 }}
+                transition={{ delay: idx * 0.08, duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+                style={{ transformStyle: 'preserve-3d', perspective: '1000px' }}
               >
-                <div className="card-premium group h-full">
-                  <div className="relative h-56 bg-gradient-to-br from-gray-50 to-emerald-50/30 flex items-center justify-center overflow-hidden">
-                    <ProductImage type={typeMap[product.id] || 'sunflower'} className="w-32 h-44 group-hover:scale-115 transition-transform duration-700" />
-                    <div className="absolute top-3 left-3 bg-[#0E5A3A] text-white text-[10px] font-bold px-2.5 py-1 rounded-full">{product.category}</div>
-                    <div className="absolute top-3 right-3 bg-[#D4A017] text-white text-[10px] font-bold px-2.5 py-1 rounded-full flex items-center gap-1">
-                      <Star size={8} className="fill-white" /> AGMARK
+                <Tilt3DCard intensity={12} glowColor="#0E5A3A" scale={1.03} className="h-full">
+                  <div className="card-premium group h-full overflow-hidden">
+                    <div className="relative h-56 bg-gradient-to-br from-gray-50 to-emerald-50/30 flex items-center justify-center overflow-hidden">
+                      {/* Animated background pattern */}
+                      <div className="absolute inset-0 opacity-[0.04]" style={{ backgroundImage: 'radial-gradient(circle, #0E5A3A 1.5px, transparent 1.5px)', backgroundSize: '24px 24px' }} />
+
+                      {/* 3D Product with float animation */}
+                      <motion.div
+                        animate={{ y: [0, -8, 0], rotateY: [0, 8, 0, -8, 0] }}
+                        transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
+                        style={{ transformStyle: 'preserve-3d', transform: 'translateZ(40px)' }}
+                        className="group-hover:scale-110 transition-transform duration-700"
+                      >
+                        <Product3D type={typeMap[product.id] || 'sunflower'} className="w-32 h-44" />
+                      </motion.div>
+
+                      {/* Glow on hover */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-emerald-100/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
+                      <div className="absolute top-3 left-3 bg-[#0E5A3A] text-white text-[10px] font-bold px-2.5 py-1 rounded-full shadow-lg" style={{ transform: 'translateZ(30px)' }}>{product.category}</div>
+                      <div className="absolute top-3 right-3 bg-[#D4A017] text-white text-[10px] font-bold px-2.5 py-1 rounded-full flex items-center gap-1 shadow-lg" style={{ transform: 'translateZ(30px)' }}>
+                        <Star size={8} className="fill-white" /> AGMARK
+                      </div>
+                    </div>
+                    <div className="p-6" style={{ transform: 'translateZ(20px)', transformStyle: 'preserve-3d' }}>
+                      <h3 className="font-bold text-[var(--kof-charcoal)] text-lg mb-1.5 group-hover:text-[#0E5A3A] transition-colors font-[family-name:var(--font-poppins)]">{product.name}</h3>
+                      <p className="text-gray-500 text-sm mb-4 line-clamp-2 leading-relaxed">{product.description}</p>
+                      <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+                        <span className="text-lg font-black text-[#0E5A3A]">{getLivePrice(product.id) || 'Contact Us'}</span>
+                        <a href={`https://wa.me/916366975382?text=Hi, I want to order ${product.name}`}
+                          target="_blank" rel="noopener noreferrer"
+                          className="flex items-center gap-1 bg-[#0E5A3A] hover:bg-[#14805A] text-white text-xs font-bold px-3.5 py-2 rounded-xl transition-all shadow-lg shadow-[#0E5A3A]/20 hover:shadow-[#0E5A3A]/40 hover:-translate-y-0.5">
+                          Order <ChevronRight size={12} />
+                        </a>
+                      </div>
                     </div>
                   </div>
-                  <div className="p-6">
-                    <h3 className="font-bold text-[var(--kof-charcoal)] text-lg mb-1.5 group-hover:text-[#0E5A3A] transition-colors font-[family-name:var(--font-poppins)]">{product.name}</h3>
-                    <p className="text-gray-500 text-sm mb-4 line-clamp-2 leading-relaxed">{product.description}</p>
-                    <div className="flex items-center justify-between pt-4 border-t border-gray-100">
-                      <span className="text-lg font-black text-[#0E5A3A]">{getLivePrice(product.id) || 'Contact Us'}</span>
-                      <a href={`https://wa.me/916366975382?text=Hi, I want to order ${product.name}`}
-                        target="_blank" rel="noopener noreferrer"
-                        className="flex items-center gap-1 bg-[#0E5A3A] hover:bg-[#14805A] text-white text-xs font-bold px-3.5 py-2 rounded-xl transition-all shadow-lg shadow-[#0E5A3A]/20">
-                        Order <ChevronRight size={12} />
-                      </a>
-                    </div>
-                  </div>
-                </div>
+                </Tilt3DCard>
               </motion.div>
             ))}
           </div>
