@@ -11,34 +11,23 @@ export async function GET() {
 
     const db = getDb();
 
-    const totalEmployees = (db.prepare('SELECT COUNT(*) as count FROM users WHERE role = ? AND status = ?').get('employee', 'active') as any).count;
     const totalOrders = (db.prepare('SELECT COUNT(*) as count FROM orders').get() as any).count;
-    const pendingLeaves = (db.prepare('SELECT COUNT(*) as count FROM leaves WHERE status = ?').get('pending') as any).count;
-    const totalRevenue = (db.prepare('SELECT COALESCE(SUM(total_amount), 0) as total FROM orders WHERE status != ?').get('cancelled') as any).total;
+    const totalRevenue = (db.prepare("SELECT COALESCE(SUM(total_amount), 0) as total FROM orders WHERE status != 'cancelled'").get() as any).total;
+    const totalAnnouncements = (db.prepare('SELECT COUNT(*) as count FROM announcements WHERE published = 1').get() as any).count;
+    const activeJobs = (db.prepare("SELECT COUNT(*) as count FROM recruitments WHERE status = 'active'").get() as any).count;
+
     const recentOrders = db.prepare(`
-      SELECT o.*, u.name as assigned_name FROM orders o 
-      LEFT JOIN users u ON o.assigned_to = u.id 
-      ORDER BY o.created_at DESC LIMIT 5
-    `).all();
-    const recentLeaves = db.prepare(`
-      SELECT l.*, u.name as employee_name, u.emp_id FROM leaves l 
-      JOIN users u ON l.employee_id = u.id 
-      ORDER BY l.applied_date DESC LIMIT 5
-    `).all();
-    const departmentStats = db.prepare(`
-      SELECT department, COUNT(*) as count FROM users WHERE role = 'employee' AND status = 'active' GROUP BY department
+      SELECT * FROM orders ORDER BY created_at DESC LIMIT 5
     `).all();
 
     return NextResponse.json({
       stats: {
-        totalEmployees,
         totalOrders,
-        pendingLeaves,
         totalRevenue,
+        totalAnnouncements,
+        activeJobs,
       },
       recentOrders,
-      recentLeaves,
-      departmentStats,
     });
   } catch (error) {
     console.error('Dashboard error:', error);

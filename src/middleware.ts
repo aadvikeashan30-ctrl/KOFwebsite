@@ -4,13 +4,8 @@ export function middleware(request: NextRequest) {
   const token = request.cookies.get('kof_token')?.value;
   const { pathname } = request.nextUrl;
 
-  // Protect admin routes
+  // Only protect admin routes
   if (pathname.startsWith('/admin') && !token) {
-    return NextResponse.redirect(new URL('/login?role=admin', request.url));
-  }
-
-  // Protect employee routes
-  if (pathname.startsWith('/employee') && !token) {
     return NextResponse.redirect(new URL('/login', request.url));
   }
 
@@ -18,5 +13,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/admin/:path*', '/employee/:path*'],
+  matcher: ['/admin/:path*'],
 };

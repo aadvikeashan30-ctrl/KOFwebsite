@@ -53,7 +53,7 @@ export default function AdminAnnouncements() {
       case 'tender': return 'bg-blue-50 border-blue-200 text-blue-700';
       case 'urgent': return 'bg-red-50 border-red-200 text-red-700';
       case 'news': return 'bg-green-50 border-green-200 text-green-700';
-      default: return 'bg-gray-50 border-gray-200 text-gray-700';
+      default: return 'bg-gray-800/50 border-gray-200 text-gray-700';
     }
   };
 
@@ -61,7 +61,7 @@ export default function AdminAnnouncements() {
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Announcements & Tenders</h1>
+          <h1 className="text-3xl font-bold text-white">Announcements & Tenders</h1>
           <p className="text-gray-600 mt-1">Post updates, tenders, and news for employees and public</p>
         </div>
         <button onClick={() => setShowModal(true)} className="btn-primary flex items-center gap-2">
@@ -80,10 +80,10 @@ export default function AdminAnnouncements() {
         {loading ? (
           <div className="text-center py-12 text-gray-500">Loading...</div>
         ) : announcements.length === 0 ? (
-          <div className="text-center py-12 text-gray-500 bg-white rounded-2xl border border-gray-100">No announcements yet</div>
+          <div className="text-center py-12 text-gray-500 bg-gray-900 rounded-2xl border border-gray-800">No announcements yet</div>
         ) : (
           announcements.map((ann) => (
-            <div key={ann.id} className="bg-white rounded-2xl border border-gray-100 p-6 hover:shadow-md transition-shadow">
+            <div key={ann.id} className="bg-gray-900 rounded-2xl border border-gray-800 p-6 hover:border-gray-700 transition-shadow">
               <div className="flex items-start justify-between gap-4">
                 <div className="flex items-start gap-4 flex-1">
                   <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${typeColor(ann.type).split(' ')[0]}`}>
@@ -91,7 +91,7 @@ export default function AdminAnnouncements() {
                   </div>
                   <div className="flex-1">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <h3 className="font-bold text-gray-900">{ann.title}</h3>
+                      <h3 className="font-bold text-white">{ann.title}</h3>
                       <span className={`text-xs px-2 py-0.5 rounded-full border font-medium ${typeColor(ann.type)}`}>
                         {ann.type}
                       </span>
@@ -115,9 +115,9 @@ export default function AdminAnnouncements() {
       {/* Create Modal */}
       {showModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl w-full max-w-lg p-8">
+          <div className="bg-gray-900 rounded-2xl w-full max-w-lg p-8">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-bold text-gray-900">New Announcement</h2>
+              <h2 className="text-xl font-bold text-white">New Announcement</h2>
               <button onClick={() => setShowModal(false)} className="p-2 rounded-lg hover:bg-gray-100"><X size={20} /></button>
             </div>
             <form onSubmit={handleCreate} className="space-y-4">
@@ -153,7 +153,7 @@ export default function AdminAnnouncements() {
                 </div>
               </div>
               <div className="flex gap-3 pt-2">
-                <button type="button" onClick={() => setShowModal(false)} className="flex-1 px-4 py-3 rounded-xl border border-gray-200 text-gray-700 font-medium hover:bg-gray-50">Cancel</button>
+                <button type="button" onClick={() => setShowModal(false)} className="flex-1 px-4 py-3 rounded-xl border border-gray-200 text-gray-700 font-medium hover:bg-gray-800/50">Cancel</button>
                 <button type="submit" className="flex-1 btn-primary">Publish</button>
               </div>
             </form>

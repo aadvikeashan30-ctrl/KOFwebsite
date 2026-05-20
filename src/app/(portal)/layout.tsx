@@ -4,8 +4,8 @@ import { useState, useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { 
-  Leaf, LayoutDashboard, Users, FileText, Calendar, ShoppingCart, 
-  LogOut, Menu, X, Bell, User, ChevronDown, Settings
+  Leaf, LayoutDashboard, ShoppingCart, IndianRupee, Briefcase, 
+  Megaphone, Image as ImageIcon, LogOut, Menu, X, User, Globe
 } from 'lucide-react';
 
 interface UserData {
@@ -25,17 +25,9 @@ export default function PortalLayout({ children }: { children: React.ReactNode }
 
   useEffect(() => {
     fetch('/api/auth/me')
-      .then(res => {
-        if (!res.ok) throw new Error('Not auth');
-        return res.json();
-      })
-      .then(data => {
-        setUser(data.user);
-        setLoading(false);
-      })
-      .catch(() => {
-        router.push('/login');
-      });
+      .then(res => { if (!res.ok) throw new Error('Not auth'); return res.json(); })
+      .then(data => { setUser(data.user); setLoading(false); })
+      .catch(() => { router.push('/login'); });
   }, [router]);
 
   const handleLogout = async () => {
@@ -45,131 +37,110 @@ export default function PortalLayout({ children }: { children: React.ReactNode }
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="min-h-screen flex items-center justify-center bg-gray-950">
         <div className="text-center">
-          <div className="w-12 h-12 border-4 border-green-700 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-gray-600">Loading portal...</p>
+          <div className="w-16 h-16 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-gray-400 font-medium">Loading Admin Panel...</p>
         </div>
       </div>
     );
   }
 
-  if (!user) return null;
+  if (!user || user.role !== 'admin') return null;
 
-  const isAdmin = user.role === 'admin';
-  const navItems = isAdmin
-    ? [
-        { name: 'Dashboard', href: '/admin/dashboard', icon: LayoutDashboard },
-        { name: 'Employees', href: '/admin/employees', icon: Users },
-        { name: 'Payslips', href: '/admin/payslips', icon: FileText },
-        { name: 'Leaves', href: '/admin/leaves', icon: Calendar },
-        { name: 'Orders', href: '/admin/orders', icon: ShoppingCart },
-        { name: 'Pricing', href: '/admin/pricing', icon: Settings },
-        { name: 'Recruitments', href: '/admin/recruitments', icon: Users },
-        { name: 'Announcements', href: '/admin/announcements', icon: Bell },
-      ]
-    : [
-        { name: 'Dashboard', href: '/employee/dashboard', icon: LayoutDashboard },
-        { name: 'Attendance', href: '/employee/attendance', icon: Settings },
-        { name: 'Payslips', href: '/employee/payslips', icon: FileText },
-        { name: 'Leaves', href: '/employee/leaves', icon: Calendar },
-        { name: 'Profile', href: '/employee/profile', icon: User },
-      ];
+  const navItems = [
+    { name: 'Dashboard', href: '/admin/dashboard', icon: LayoutDashboard },
+    { name: 'Pricing', href: '/admin/pricing', icon: IndianRupee },
+    { name: 'Orders', href: '/admin/orders', icon: ShoppingCart },
+    { name: 'Announcements', href: '/admin/announcements', icon: Megaphone },
+    { name: 'Recruitments', href: '/admin/recruitments', icon: Briefcase },
+  ];
 
   return (
-    <div className="min-h-screen bg-gray-50 flex">
-      {/* Sidebar */}
-      <aside className={`fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-gray-200 transform transition-transform duration-300 lg:translate-x-0 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+    <div className="min-h-screen bg-gray-950 flex">
+      {/* Sidebar - Dark Glass */}
+      <aside className={`fixed inset-y-0 left-0 z-50 w-72 bg-gray-900/95 backdrop-blur-xl border-r border-gray-800 transform transition-transform duration-500 lg:translate-x-0 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
         <div className="flex flex-col h-full">
           {/* Logo */}
-          <div className="h-16 flex items-center gap-3 px-6 border-b border-gray-100">
-            <div className="w-9 h-9 rounded-lg gradient-primary flex items-center justify-center">
-              <Leaf className="text-white" size={20} />
+          <div className="h-20 flex items-center gap-3 px-6 border-b border-gray-800">
+            <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-emerald-500 to-green-600 flex items-center justify-center shadow-lg shadow-emerald-500/20">
+              <Leaf className="text-white" size={22} />
             </div>
             <div>
-              <h1 className="font-bold text-gray-900 text-sm">KOF Chitradurga</h1>
-              <p className="text-xs text-gray-500">{isAdmin ? 'Admin Panel' : 'Employee Portal'}</p>
+              <h1 className="font-bold text-white text-sm">KOF Admin</h1>
+              <p className="text-xs text-emerald-400">Website Control Panel</p>
             </div>
           </div>
 
           {/* Navigation */}
-          <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
+          <nav className="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
+            <p className="text-xs font-semibold text-gray-500 uppercase tracking-widest px-3 mb-3">Website Management</p>
             {navItems.map((item) => {
               const isActive = pathname === item.href;
               return (
-                <Link
-                  key={item.name}
-                  href={item.href}
-                  onClick={() => setSidebarOpen(false)}
-                  className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all ${
+                <Link key={item.name} href={item.href} onClick={() => setSidebarOpen(false)}
+                  className={`flex items-center gap-3 px-4 py-3.5 rounded-xl text-sm font-medium transition-all duration-300 ${
                     isActive
-                      ? 'bg-green-50 text-green-700 border border-green-100'
-                      : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
-                  }`}
-                >
+                      ? 'bg-gradient-to-r from-emerald-500/20 to-green-500/10 text-emerald-400 border border-emerald-500/30 shadow-lg shadow-emerald-500/5'
+                      : 'text-gray-400 hover:text-white hover:bg-gray-800/50'
+                  }`}>
                   <item.icon size={20} />
                   {item.name}
+                  {isActive && <div className="ml-auto w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />}
                 </Link>
               );
             })}
+
+            <div className="my-6 border-t border-gray-800" />
+            <p className="text-xs font-semibold text-gray-500 uppercase tracking-widest px-3 mb-3">Quick Links</p>
+            <a href="/" target="_blank" rel="noopener noreferrer"
+              className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-400 hover:text-white hover:bg-gray-800/50 transition-all">
+              <Globe size={20} /> View Website
+            </a>
           </nav>
 
           {/* User & Logout */}
-          <div className="p-4 border-t border-gray-100">
-            <div className="flex items-center gap-3 px-3 py-2 mb-2">
-              <div className="w-9 h-9 rounded-full bg-green-100 flex items-center justify-center">
-                <User size={18} className="text-green-700" />
+          <div className="p-4 border-t border-gray-800">
+            <div className="flex items-center gap-3 px-3 py-3 mb-2 bg-gray-800/50 rounded-xl">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-green-600 flex items-center justify-center">
+                <User size={18} className="text-white" />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-gray-900 truncate">{user.name}</p>
-                <p className="text-xs text-gray-500 truncate">{user.emp_id}</p>
+                <p className="text-sm font-medium text-white truncate">{user.name}</p>
+                <p className="text-xs text-gray-500 truncate">Administrator</p>
               </div>
             </div>
-            <button
-              onClick={handleLogout}
-              className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-red-600 hover:bg-red-50 transition-all"
-            >
-              <LogOut size={20} />
-              Sign Out
+            <button onClick={handleLogout}
+              className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-all">
+              <LogOut size={20} /> Sign Out
             </button>
           </div>
         </div>
       </aside>
 
-      {/* Overlay for mobile */}
-      {sidebarOpen && (
-        <div className="fixed inset-0 bg-black/50 z-40 lg:hidden" onClick={() => setSidebarOpen(false)} />
-      )}
+      {/* Overlay */}
+      {sidebarOpen && <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 lg:hidden" onClick={() => setSidebarOpen(false)} />}
 
       {/* Main Content */}
-      <div className="flex-1 lg:ml-64">
+      <div className="flex-1 lg:ml-72">
         {/* Top Bar */}
-        <header className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-4 lg:px-8 sticky top-0 z-30">
-          <button
-            onClick={() => setSidebarOpen(!sidebarOpen)}
-            className="lg:hidden p-2 rounded-lg hover:bg-gray-100"
-          >
-            {sidebarOpen ? <X size={20} /> : <Menu size={20} />}
+        <header className="h-20 bg-gray-900/80 backdrop-blur-xl border-b border-gray-800 flex items-center justify-between px-6 lg:px-8 sticky top-0 z-30">
+          <button onClick={() => setSidebarOpen(!sidebarOpen)} className="lg:hidden p-2 rounded-xl hover:bg-gray-800 text-gray-400">
+            {sidebarOpen ? <X size={22} /> : <Menu size={22} />}
           </button>
-
-          <div className="flex items-center gap-4 ml-auto">
-            <button className="relative p-2 rounded-lg hover:bg-gray-100">
-              <Bell size={20} className="text-gray-600" />
-              <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full" />
-            </button>
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center">
-                <User size={16} className="text-green-700" />
-              </div>
-              <span className="text-sm font-medium text-gray-700 hidden md:block">{user.name}</span>
+          <div className="hidden lg:block">
+            <h2 className="text-lg font-bold text-white">{navItems.find(n => n.href === pathname)?.name || 'Admin'}</h2>
+            <p className="text-xs text-gray-500">Manage your website content</p>
+          </div>
+          <div className="flex items-center gap-3">
+            <div className="px-3 py-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
+              <span className="text-xs font-bold text-emerald-400">● LIVE</span>
             </div>
           </div>
         </header>
 
         {/* Page Content */}
-        <main className="p-4 lg:p-8">
-          {children}
-        </main>
+        <main className="p-6 lg:p-8">{children}</main>
       </div>
     </div>
   );

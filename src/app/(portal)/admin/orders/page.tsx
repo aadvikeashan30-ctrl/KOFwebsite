@@ -48,7 +48,7 @@ export default function AdminOrders() {
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Orders</h1>
+          <h1 className="text-3xl font-bold text-white">Orders</h1>
           <p className="text-gray-600 mt-1">Manage product orders and distribution</p>
         </div>
         <button onClick={() => setShowModal(true)} className="btn-primary flex items-center gap-2">
@@ -64,10 +64,10 @@ export default function AdminOrders() {
       )}
 
       {/* Orders Table */}
-      <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden">
+      <div className="bg-gray-900 rounded-2xl border border-gray-800 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
-            <thead className="bg-gray-50 border-b border-gray-100">
+            <thead className="bg-gray-800/50 border-b border-gray-800">
               <tr>
                 <th className="text-left py-4 px-4 font-semibold text-gray-600">Order #</th>
                 <th className="text-left py-4 px-4 font-semibold text-gray-600">Customer</th>
@@ -85,15 +85,15 @@ export default function AdminOrders() {
                 <tr><td colSpan={7} className="text-center py-8 text-gray-500">No orders yet</td></tr>
               ) : (
                 orders.map((order) => (
-                  <tr key={order.id} className="border-b border-gray-50 hover:bg-gray-50/50">
-                    <td className="py-4 px-4 font-mono text-xs font-medium text-gray-900">{order.order_number}</td>
+                  <tr key={order.id} className="border-b border-gray-50 hover:bg-gray-800/50/50">
+                    <td className="py-4 px-4 font-mono text-xs font-medium text-white">{order.order_number}</td>
                     <td className="py-4 px-4">
-                      <p className="text-gray-900">{order.customer_name}</p>
+                      <p className="text-white">{order.customer_name}</p>
                       <p className="text-xs text-gray-500">{order.customer_phone}</p>
                     </td>
                     <td className="py-4 px-4 text-gray-700">{order.product}</td>
                     <td className="py-4 px-4 text-gray-700">{order.quantity} {order.unit}</td>
-                    <td className="py-4 px-4 font-bold text-gray-900">₹{order.total_amount?.toLocaleString()}</td>
+                    <td className="py-4 px-4 font-bold text-white">₹{order.total_amount?.toLocaleString()}</td>
                     <td className="py-4 px-4 text-gray-700">{order.district}</td>
                     <td className="py-4 px-4">
                       <span className={`text-xs px-2.5 py-1 rounded-full font-medium ${
@@ -117,9 +117,9 @@ export default function AdminOrders() {
       {/* Create Order Modal */}
       {showModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto p-8">
+          <div className="bg-gray-900 rounded-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto p-8">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-bold text-gray-900">New Order</h2>
+              <h2 className="text-xl font-bold text-white">New Order</h2>
               <button onClick={() => setShowModal(false)} className="p-2 rounded-lg hover:bg-gray-100"><X size={20} /></button>
             </div>
             <form onSubmit={handleCreate} className="space-y-4">
@@ -191,7 +191,7 @@ export default function AdminOrders() {
               )}
               <div className="flex gap-3 pt-2">
                 <button type="button" onClick={() => setShowModal(false)}
-                  className="flex-1 px-4 py-3 rounded-xl border border-gray-200 text-gray-700 font-medium hover:bg-gray-50">Cancel</button>
+                  className="flex-1 px-4 py-3 rounded-xl border border-gray-200 text-gray-700 font-medium hover:bg-gray-800/50">Cancel</button>
                 <button type="submit" className="flex-1 btn-primary">Create Order</button>
               </div>
             </form>

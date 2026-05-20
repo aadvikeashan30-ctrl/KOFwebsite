@@ -34,7 +34,7 @@ export default function AdminRecruitments() {
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Recruitments</h1>
+          <h1 className="text-3xl font-bold text-white">Recruitments</h1>
           <p className="text-gray-600 mt-1">Post and manage job openings on the website</p>
         </div>
         <button onClick={() => setShowModal(true)} className="btn-primary flex items-center gap-2"><Plus size={18} /> Post New Job</button>
@@ -45,17 +45,17 @@ export default function AdminRecruitments() {
       {loading ? (
         <div className="text-center py-12"><div className="w-8 h-8 border-4 border-green-700 border-t-transparent rounded-full animate-spin mx-auto" /></div>
       ) : jobs.length === 0 ? (
-        <div className="bg-white rounded-2xl border border-gray-100 p-12 text-center">
+        <div className="bg-gray-900 rounded-2xl border border-gray-800 p-12 text-center">
           <Briefcase size={48} className="text-gray-300 mx-auto mb-3" />
           <p className="text-gray-500">No job postings yet. Click &quot;Post New Job&quot; to add one.</p>
         </div>
       ) : (
         <div className="space-y-4">
           {jobs.map((job) => (
-            <div key={job.id} className="bg-white rounded-2xl border border-gray-100 p-6 flex items-center justify-between gap-4">
+            <div key={job.id} className="bg-gray-900 rounded-2xl border border-gray-800 p-6 flex items-center justify-between gap-4">
               <div>
                 <div className="flex items-center gap-2 mb-1">
-                  <h3 className="font-bold text-gray-900">{job.title}</h3>
+                  <h3 className="font-bold text-white">{job.title}</h3>
                   <span className={`text-xs px-2 py-0.5 rounded-full font-semibold ${job.status === 'active' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'}`}>{job.status}</span>
                 </div>
                 <p className="text-sm text-gray-500">{job.department} • {job.location} • {job.type}</p>
@@ -69,9 +69,9 @@ export default function AdminRecruitments() {
 
       {showModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto p-8">
+          <div className="bg-gray-900 rounded-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto p-8">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-bold text-gray-900">Post New Job</h2>
+              <h2 className="text-xl font-bold text-white">Post New Job</h2>
               <button onClick={() => setShowModal(false)} className="p-2 rounded-lg hover:bg-gray-100"><X size={20} /></button>
             </div>
             <form onSubmit={handleCreate} className="space-y-4">
@@ -104,7 +104,7 @@ export default function AdminRecruitments() {
                 </div>
               </div>
               <div className="flex gap-3 pt-2">
-                <button type="button" onClick={() => setShowModal(false)} className="flex-1 px-4 py-3 rounded-xl border border-gray-200 text-gray-700 font-medium hover:bg-gray-50">Cancel</button>
+                <button type="button" onClick={() => setShowModal(false)} className="flex-1 px-4 py-3 rounded-xl border border-gray-200 text-gray-700 font-medium hover:bg-gray-800/50">Cancel</button>
                 <button type="submit" className="flex-1 btn-primary">Publish Job</button>
               </div>
             </form>
