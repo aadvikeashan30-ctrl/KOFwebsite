@@ -2,8 +2,10 @@
 
 import Link from 'next/link';
 import { Leaf, Phone, Mail, MapPin, MessageCircle, Globe, Camera, ArrowUpRight } from 'lucide-react';
+import { useTranslation } from '@/components/providers/LocaleProvider';
 
 export default function Footer() {
+  const { t } = useTranslation();
   return (
     <footer className="relative overflow-hidden">
       <div className="gradient-forest text-white">
@@ -97,9 +99,9 @@ export default function Footer() {
 
       <div className="bg-[var(--kof-forest-deep)] border-t border-white/5">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-5 flex flex-col md:flex-row justify-between items-center gap-3">
-          <p className="text-white/40 text-xs">&copy; {new Date().getFullYear()} KOF Chitradurga. All rights reserved.</p>
+          <p className="text-white/40 text-xs">&copy; {new Date().getFullYear()} {t('footer.copyright')}</p>
           <p className="text-white/30 text-[11px] uppercase tracking-wider font-medium">
-            Farmer&apos;s Oriented • 4 Districts • 50km Radius • AGMARK Certified
+            {t('footer.tagline')}
           </p>
         </div>
       </div>

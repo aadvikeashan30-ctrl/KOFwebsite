@@ -4,25 +4,27 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { Menu, X, Leaf, Phone, Mail, ChevronDown } from 'lucide-react';
 import LanguageToggle from '@/components/ui/LanguageToggle';
+import { useTranslation } from '@/components/providers/LocaleProvider';
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [dropdown, setDropdown] = useState<string | null>(null);
+  const { t } = useTranslation();
 
   const navLinks = [
-    { name: 'Home', href: '/' },
-    { name: 'About', href: '/about', children: [
-      { name: 'About KOF', href: '/about' },
-      { name: 'Management', href: '/management' },
-      { name: 'Our Offices', href: '/offices' },
+    { name: t('nav.home'), href: '/' },
+    { name: t('nav.about'), href: '/about', children: [
+      { name: t('nav.aboutKof'), href: '/about' },
+      { name: t('nav.management'), href: '/management' },
+      { name: t('nav.offices'), href: '/offices' },
     ]},
-    { name: 'Products', href: '/products' },
-    { name: 'Marketing', href: '/marketing' },
-    { name: 'Activities', href: '/activities' },
-    { name: 'Recruitments', href: '/recruitments' },
-    { name: 'Tenders', href: '/tenders' },
-    { name: 'Gallery', href: '/gallery' },
-    { name: 'Contact', href: '/contact' },
+    { name: t('nav.products'), href: '/products' },
+    { name: t('nav.marketing'), href: '/marketing' },
+    { name: t('nav.activities'), href: '/activities' },
+    { name: t('nav.recruitments'), href: '/recruitments' },
+    { name: t('nav.tenders'), href: '/tenders' },
+    { name: t('nav.gallery'), href: '/gallery' },
+    { name: t('nav.contact'), href: '/contact' },
   ];
 
   return (
@@ -41,7 +43,7 @@ export default function Navbar() {
           <div className="flex items-center gap-4">
             <LanguageToggle />
             <Link href="/login" className="text-[var(--kof-gold-light)] hover:text-[var(--kof-gold)] transition-colors font-medium text-xs uppercase tracking-wider">
-              Admin Panel
+              {t('nav.admin')}
             </Link>
           </div>
         </div>
@@ -72,7 +74,7 @@ export default function Navbar() {
                     {link.children && <ChevronDown size={13} className="opacity-50" />}
                   </Link>
                   {link.children && dropdown === link.name && (
-                    <div className="absolute top-full left-0 mt-1 bg-white rounded-2xl shadow-2xl shadow-black/10 border border-gray-100 py-2.5 w-52 z-50 animate-scale-in">
+                    <div className="absolute top-full left-0 mt-1 bg-white rounded-2xl shadow-2xl shadow-black/10 border border-gray-100 py-2.5 w-52 z-[60] animate-scale-in">
                       {link.children.map((child) => (
                         <Link key={child.name} href={child.href}
                           className="block px-5 py-2.5 text-sm text-gray-600 hover:bg-[var(--kof-forest)]/5 hover:text-[var(--kof-forest)] transition-all font-medium">
@@ -84,7 +86,7 @@ export default function Navbar() {
                 </div>
               ))}
               <Link href="/login" className="ml-4 bg-[var(--kof-forest)] hover:bg-[var(--kof-forest-light)] text-white text-xs font-bold py-2.5 px-5 rounded-xl transition-all duration-300 shadow-lg shadow-[var(--kof-forest)]/20 hover:shadow-[var(--kof-forest)]/40 hover:-translate-y-0.5">
-                Admin
+                {t('nav.admin')}
               </Link>
             </div>
 
@@ -110,9 +112,10 @@ export default function Navbar() {
                 ))}
               </div>
             ))}
-            <div className="mt-4 pt-4 border-t border-gray-100">
-              <Link href="/login" onClick={() => setIsOpen(false)} className="block text-center btn-primary text-sm">
-                Admin Panel
+            <div className="mt-4 pt-4 border-t border-gray-100 flex items-center justify-between">
+              <LanguageToggle />
+              <Link href="/login" onClick={() => setIsOpen(false)} className="btn-primary text-sm">
+                {t('nav.admin')}
               </Link>
             </div>
           </div>

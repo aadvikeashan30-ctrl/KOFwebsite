@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { ArrowRight, Shield, Award, Droplets, Sparkles } from 'lucide-react';
 import Product3D from '@/components/products/Product3D';
 import AnimatedCounter from '@/components/ui/AnimatedCounter';
+import { useTranslation } from '@/components/providers/LocaleProvider';
 
 const PRODUCTS_3D: Array<{ type: 'sunflower' | 'groundnut' | 'palmolein' | 'soyabean' | 'ricebran'; name: string; color: string }> = [
   { type: 'sunflower', name: 'Sungold', color: '#f59e0b' },
@@ -18,6 +19,7 @@ const PRODUCTS_3D: Array<{ type: 'sunflower' | 'groundnut' | 'palmolein' | 'soya
 export default function Hero3DSection() {
   const [activeProduct, setActiveProduct] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
+  const { t } = useTranslation();
 
   // Mouse tracking for 3D effect
   const mouseX = useMotionValue(0);
@@ -134,7 +136,7 @@ export default function Hero3DSection() {
             style={{ transform: 'translateZ(40px)' }}
           >
             <div className="w-2 h-2 rounded-full bg-[#D4A017] animate-pulse" />
-            <span className="text-sm font-medium text-[#D4A017]">AGMARK Certified | Since 1984</span>
+            <span className="text-sm font-medium text-[#D4A017]">{t('hero.badge')}</span>
           </motion.div>
 
           {/* Headline with layered 3D */}
@@ -146,7 +148,7 @@ export default function Hero3DSection() {
               className="block text-white/95"
               style={{ transformStyle: 'preserve-3d', transformOrigin: 'bottom' }}
             >
-              Pure Oil,
+              {t('hero.title1')}
             </motion.span>
             <motion.span
               initial={{ opacity: 0, y: 30, rotateX: -90 }}
@@ -155,7 +157,7 @@ export default function Hero3DSection() {
               className="block text-gradient-gold"
               style={{ transformStyle: 'preserve-3d', transformOrigin: 'bottom' }}
             >
-              Pure Trust.
+              {t('hero.title2')}
             </motion.span>
           </h1>
 
@@ -166,8 +168,7 @@ export default function Hero3DSection() {
             className="text-lg sm:text-xl text-white/60 mb-10 max-w-lg leading-relaxed font-light"
             style={{ transform: 'translateZ(20px)' }}
           >
-            Karnataka&apos;s most trusted cooperative delivering premium AGMARK-certified edible oils
-            from farm to family for 40+ years.
+            {t('hero.subtitle')}
           </motion.p>
 
           <motion.div
@@ -183,7 +184,7 @@ export default function Hero3DSection() {
                 className="group btn-gold flex items-center gap-2 text-base"
                 style={{ transformStyle: 'preserve-3d' }}
               >
-                Explore Products
+                {t('hero.cta1')}
                 <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
               </motion.span>
             </Link>
@@ -193,7 +194,7 @@ export default function Hero3DSection() {
                 whileTap={{ scale: 0.97 }}
                 className="bg-white/5 hover:bg-white/10 backdrop-blur-xl border border-white/15 hover:border-white/30 text-white font-semibold px-7 py-3.5 rounded-2xl transition-all duration-500"
               >
-                Our Legacy
+                {t('hero.cta2')}
               </motion.span>
             </Link>
           </motion.div>
@@ -206,10 +207,10 @@ export default function Hero3DSection() {
             className="grid grid-cols-4 gap-3 sm:gap-6 mt-14 pt-8 border-t border-white/10"
           >
             {[
-              { value: 40, suffix: '+', label: 'Years' },
-              { value: 6198, suffix: '+', label: 'MT Packed' },
-              { value: 4, suffix: '', label: 'Districts' },
-              { value: 140, suffix: '+', label: 'Outlets' },
+              { value: 40, suffix: '+', label: t('hero.stat.years') },
+              { value: 6198, suffix: '+', label: t('hero.stat.packed') },
+              { value: 4, suffix: '', label: t('hero.stat.districts') },
+              { value: 140, suffix: '+', label: t('hero.stat.outlets') },
             ].map((stat, idx) => (
               <motion.div
                 key={idx}
