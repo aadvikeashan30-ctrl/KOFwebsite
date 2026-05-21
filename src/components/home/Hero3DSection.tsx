@@ -85,26 +85,39 @@ export default function Hero3DSection() {
           className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-emerald-400/10 blur-3xl"
         />
 
-        {/* Floating 3D particles */}
-        {Array.from({ length: 12 }).map((_, i) => (
+        {/* Floating 3D particles - fixed positions to avoid hydration mismatch */}
+        {[
+          { left: 15, top: 25, dur: 9, x: 20 },
+          { left: 35, top: 45, dur: 11, x: -15 },
+          { left: 55, top: 30, dur: 10, x: 10 },
+          { left: 75, top: 55, dur: 12, x: -20 },
+          { left: 25, top: 65, dur: 8, x: 15 },
+          { left: 85, top: 35, dur: 13, x: -10 },
+          { left: 45, top: 70, dur: 9, x: 25 },
+          { left: 65, top: 22, dur: 11, x: -18 },
+          { left: 20, top: 50, dur: 10, x: 12 },
+          { left: 90, top: 40, dur: 14, x: -22 },
+          { left: 40, top: 75, dur: 8, x: 18 },
+          { left: 70, top: 28, dur: 12, x: -12 },
+        ].map((p, i) => (
           <motion.div
             key={i}
             initial={{ opacity: 0 }}
             animate={{
               opacity: [0.2, 0.6, 0.2],
               y: [0, -100, 0],
-              x: [0, Math.random() * 50 - 25, 0],
+              x: [0, p.x, 0],
             }}
             transition={{
-              duration: 8 + Math.random() * 6,
+              duration: p.dur,
               repeat: Infinity,
               delay: i * 0.7,
               ease: 'easeInOut',
             }}
             className="absolute w-2 h-2 rounded-full bg-[#D4A017]"
             style={{
-              left: `${10 + Math.random() * 80}%`,
-              top: `${20 + Math.random() * 60}%`,
+              left: `${p.left}%`,
+              top: `${p.top}%`,
               boxShadow: '0 0 10px #D4A017, 0 0 20px #D4A017',
             }}
           />
